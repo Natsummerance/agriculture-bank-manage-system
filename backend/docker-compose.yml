@@ -1,0 +1,58 @@
+version: '3.8'
+
+services:
+  # MySQL 数据库
+  mysql:
+    image: mysql:8.0
+    container_name: agriverse-mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: agriverse
+      MYSQL_USER: agriverse
+      MYSQL_PASSWORD: agriverse123
+      TZ: 'Asia/Shanghai'
+    ports:
+      - "3306:3306"
+    volumes:
+      - mysql_data:/var/lib/mysql
+      - ./init.sql:/docker-entrypoint-initdb.d/init.sql
+    networks:
+      - agriverse-network
+    healthcheck:
+      test: [ "CMD", "mysqladmin", "ping", "-h", "localhost" ]
+      timeout: 20s
+      retries: 10
+
+  # Java 后端应用
+  backend:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: agriverse-backend
+    environment:
+      SPRING_PROFILES_ACTIVE: dev
+      SPRING_DATASOURCE_URL: jdbc:mysql://mysql:3306/agriverse?useUnicode=true&characterEncoding=utf8mb4&serverTimezone=Asia/Shanghai
+      SPRING_DATASOURCE_USERNAME: agriverse
+      SPRING_DATASOURCE_PASSWORD: agriverse123
+      TZ: 'Asia/Shanghai'
+    ports:
+      - "8080:8080"
+    depends_on:
+      mysql:
+        condition: service_healthy
+    networks:
+      - agriverse-network
+    healthcheck:
+      test: [ "CMD", "curl", "-f", "http://localhost:8080/api/auth/health" ]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+
+volumes:
+  mysql_data:
+    driver: local
+
+networks:
+  agriverse-network:
+    driver: bridge
