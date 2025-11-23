@@ -1,0 +1,120 @@
+/**
+ * 星云·AgriVerse 深空夜间主题令牌
+ * Pure Night Mode Design Tokens
+ * 统一深空宇宙风格 - 无日间模式
+ */
+
+/* ============================================
+   深空夜间主题 (Deep Space Night Theme)
+   唯一主题 - 全局生效
+   ============================================ */
+:root {
+  /* 背景层 - 深空渐变 */
+  --bg-main: #0A0A0D;
+  --bg-surface: #121726;
+  --bg-elevated: #1C212E;
+  --bg-overlay: rgba(0, 0, 0, 0.7);
+  
+  /* 品牌色 - 极光青 & 生物绿 */
+  --brand-primary: #18FF74;
+  --brand-secondary: #00D6C2;
+  --brand-accent: #FF7A9C;
+  
+  /* 功能色 */
+  --color-success: #00D6C2;
+  --color-warning: #FFD700;
+  --color-error: #FF7A9C;
+  --color-info: #18FF74;
+  
+  /* 文字色 - 高对比度 */
+  --text-primary: #FFFFFF;
+  --text-secondary: #A5ACBA;
+  --text-tertiary: #6C7580;
+  --text-disabled: #4A5160;
+  --text-inverse: #0A0A0D;
+  
+  /* 边框色 - 半透明发光 */
+  --border-base: rgba(255, 255, 255, 0.1);
+  --border-light: rgba(255, 255, 255, 0.05);
+  --border-strong: rgba(255, 255, 255, 0.2);
+  
+  /* 阴影 - 深空柔和 */
+  --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.3);
+  --shadow-md: 0 4px 6px rgba(0, 0, 0, 0.4);
+  --shadow-lg: 0 10px 15px rgba(0, 0, 0, 0.5);
+  --shadow-xl: 0 20px 25px rgba(0, 0, 0, 0.6);
+  
+  /* 霓虹发光效果 */
+  --glow-primary: 0 0 12px rgba(24, 255, 116, 0.55);
+  --glow-secondary: 0 0 12px rgba(0, 214, 194, 0.55);
+  --glow-accent: 0 0 12px rgba(255, 122, 156, 0.55);
+  
+  /* 字体粗细 - 防眩光优化 */
+  --font-weight-normal: 460;
+  --font-weight-medium: 510;
+  --font-weight-semibold: 610;
+  --font-weight-bold: 710;
+  
+  /* 特殊效果 - 毛玻璃 */
+  --blur-glass: blur(24px);
+  --opacity-glass: 0.75;
+  
+  /* 3D光照 - 绿色生物光 */
+  --light-intensity: 0.6;
+  --light-color: #18FF74;
+  --ambient-intensity: 0.3;
+  
+  /* 按钮圆角 - 统一12px */
+  --radius-btn: 12px;
+  --radius-card: 16px;
+  --radius-modal: 20px;
+  
+  /* 间距系统 - 8pt网格 */
+  --space-xs: 8px;
+  --space-sm: 12px;
+  --space-md: 16px;
+  --space-lg: 24px;
+  --space-xl: 32px;
+  
+  /* 按钮最小尺寸 - 移动端触控友好 */
+  --btn-min-height: 48px;
+  --btn-min-width: 48px;
+  
+  /* 色彩方案固定为深色 */
+  color-scheme: dark;
+}
+
+/* 尊重用户减少动画偏好 */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    transition-duration: 0.01ms !important;
+    animation-duration: 0.01ms !important;
+  }
+}
+
+/* ============================================
+   工具类（基于主题变量）
+   ============================================ */
+.glass-morphism {
+  background: var(--bg-elevated);
+  backdrop-filter: var(--blur-glass);
+  border: 1px solid var(--border-base);
+  opacity: var(--opacity-glass);
+}
+
+.text-glow {
+  text-shadow: var(--glow-primary);
+}
+
+.border-glow {
+  box-shadow: var(--glow-primary);
+}
+
+/* ============================================
+   多租户白标支持（动态覆盖）
+   ============================================ */
+:root[data-tenant] {
+  /* 将在运行时通过 JS 注入企业自定义颜色 */
+}

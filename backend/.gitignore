@@ -1,0 +1,40 @@
+# Maven
+target/
+*.jar
+*.war
+*.ear
+*.class
+.classpath
+.project
+.settings/
+.springBeans
+/mvn_bin/
+
+# IDE
+.idea/
+*.iml
+*.iws
+*.ipr
+*.log
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Application
+application-prod.yml
+application-prod.properties
+
+# Logs
+logs/
+*.log
+*.log.*
+
+# Local
+.env
+.env.local
+.vscode/
+
+# Database
+*.db
+*.sqlite
