@@ -10,6 +10,7 @@ import { toast } from "sonner";
 import { StatsCard } from "../../../components/common/StatsCard";
 import { SimpleLineChart } from "../../../components/common/SimpleLineChart";
 import { navigateToSubRoute } from "../../../utils/subRouteNavigation";
+import { ArrowLeft } from "lucide-react";
 
 const withdrawSchema = z.object({
   amount: z.coerce.number().positive("提现金额必须大于0"),
@@ -49,13 +50,23 @@ export default function FarmerWalletPanel() {
           animate={{ opacity: 1, y: 0 }}
           className="flex flex-col md:flex-row md:items-center md:justify-between gap-6"
         >
-          <div>
-            <h2 className="mb-3 text-3xl font-semibold text-transparent bg-clip-text bg-gradient-to-r from-[#18FF74] to-[#00D6C2]">
-              钱包中心
-            </h2>
-            <p className="text-sm text-white/60">
-              实时查看账户余额、收支趋势，并一键发起提现申请
-            </p>
+          <div className="flex items-center gap-4">
+            <Button
+              variant="ghost"
+              size="icon"
+              onClick={() => navigateToSubRoute("profile", "overview")}
+              className="text-white/60 hover:text-white hover:bg-white/10"
+            >
+              <ArrowLeft className="w-5 h-5" />
+            </Button>
+            <div>
+              <h2 className="mb-3 text-3xl font-semibold text-transparent bg-clip-text bg-gradient-to-r from-[#18FF74] to-[#00D6C2]">
+                钱包中心
+              </h2>
+              <p className="text-sm text-white/60">
+                实时查看账户余额、收支趋势，并一键发起提现申请
+              </p>
+            </div>
           </div>
           <Button
             variant="outline"

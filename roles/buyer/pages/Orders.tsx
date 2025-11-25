@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { motion } from "motion/react";
 import { FileText } from "lucide-react";
 import {
@@ -85,11 +85,19 @@ export default function BuyerOrders() {
     setFilterStatus,
     dateRange,
     setDateRange,
+    loading,
+    loadOrders,
     updateStatus,
+    cancelOrder,
     updateOrder,
     setRefundStatus,
     appendRefundHistory,
   } = useBuyerOrderStore();
+
+  // 加载订单列表
+  useEffect(() => {
+    loadOrders(filterStatus === 'all' ? undefined : filterStatus);
+  }, [filterStatus]);
 
   const checkoutForm = useZodForm(checkoutSchema);
   const refundForm = useZodForm(refundSchema);
@@ -111,9 +119,12 @@ export default function BuyerOrders() {
     checkoutForm.reset();
   };
 
-  const handleCancel = (id: string) => {
-    updateStatus(id, "cancelled");
-    toast.success("订单已取消");
+  const handleCancel = async (id: string) => {
+    try {
+      await cancelOrder(id);
+    } catch (error) {
+      // 错误已在store中处理
+    }
   };
 
   const handleConfirm = (id: string) => {
@@ -173,7 +184,11 @@ export default function BuyerOrders() {
           />
         </div>
 
-        {filtered.length === 0 ? (
+        {loading ? (
+          <div className="flex items-center justify-center py-20">
+            <div className="w-8 h-8 border-2 border-emerald-400 border-t-transparent rounded-full animate-spin" />
+          </div>
+        ) : filtered.length === 0 ? (
           <div className="rounded-2xl border border-dashed border-white/15 bg-white/5 p-8 text-center text-white/60">
             暂无订单记录，去「买好货」下单试试吧～
           </div>

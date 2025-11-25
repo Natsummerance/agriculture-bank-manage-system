@@ -61,6 +61,32 @@ public class FarmerProductController {
     }
 
     /**
+     * 创建商品
+     * POST /api/farmer/products/create
+     */
+    @PostMapping("/create")
+    @PreAuthorize("isAuthenticated()")
+    public ResponseEntity<ApiResponse<ProductListResponse.ProductItem>> createProduct(
+            Principal principal,
+            @Valid @RequestBody CreateProductRequest request) {
+        try {
+            String farmerId = principal.getName();
+            log.info("创建商品请求: farmerId={}, name={}", farmerId, request.getName());
+
+            ProductListResponse.ProductItem created = farmerProductService.createProduct(farmerId, request);
+            return ResponseEntity.ok(ApiResponse.success("商品创建成功", created));
+        } catch (RuntimeException e) {
+            log.error("商品创建失败: {}", e.getMessage());
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                    .body(ApiResponse.error(400, e.getMessage()));
+        } catch (Exception e) {
+            log.error("商品创建异常", e);
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(ApiResponse.error(500, "创建商品失败，请稍后重试"));
+        }
+    }
+
+    /**
      * 商品上下架
      * POST /api/farmer/products/toggle-status
      */

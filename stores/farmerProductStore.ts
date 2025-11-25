@@ -1,56 +1,65 @@
 import { create } from 'zustand';
-
-export interface FarmerProduct {
-  id: string;
-  name: string;
-  category: string;
-  price: number;
-  stock: number;
-  origin: string;
-  status: 'on' | 'off';
-  viewCount?: number;
-  favoriteCount?: number;
-  shareCount?: number;
-  description?: string;
-}
+import {
+  createFarmerProduct,
+  getFarmerProducts,
+  toggleProductStatus,
+  type FarmerProduct,
+  type ProductListParams,
+  type CreateProductRequest,
+} from '../api/farmer';
 
 interface FarmerProductState {
   products: FarmerProduct[];
-  addProduct: (p: Omit<FarmerProduct, 'id' | 'status' | 'viewCount' | 'favoriteCount' | 'shareCount'>) => void;
-  updateProduct: (id: string, patch: Partial<FarmerProduct>) => void;
-  toggleStatus: (id: string) => void;
+  loading: boolean;
+  initialized: boolean;
+  error?: string;
+  fetchProducts: (params?: ProductListParams) => Promise<void>;
+  addProduct: (payload: CreateProductRequest) => Promise<FarmerProduct>;
+  toggleStatus: (id: string) => Promise<'on' | 'off'>;
 }
 
-export const useFarmerProductStore = create<FarmerProductState>((set) => ({
+export const useFarmerProductStore = create<FarmerProductState>((set, get) => ({
   products: [],
-  addProduct: (p) =>
+  loading: false,
+  initialized: false,
+  error: undefined,
+  fetchProducts: async (params) => {
+    set({ loading: true });
+    try {
+      const response = await getFarmerProducts(params);
+      set({
+        products: response.products,
+        loading: false,
+        initialized: true,
+        error: undefined,
+      });
+    } catch (error: any) {
+      const message = error?.message || '获取商品列表失败';
+      set({ loading: false, error: message, initialized: true });
+      throw error;
+    }
+  },
+  addProduct: async (payload) => {
+    const product = await createFarmerProduct(payload);
     set((state) => ({
-      products: [
-        {
-          ...p,
-          id: `fp_${Date.now()}`,
-          status: 'on',
-          viewCount: 0,
-          favoriteCount: 0,
-          shareCount: 0,
-        },
-        ...state.products,
-      ],
-    })),
-  updateProduct: (id, patch) =>
+      products: [product, ...state.products],
+      initialized: true,
+    }));
+    return product;
+  },
+  toggleStatus: async (id) => {
+    const product = get().products.find((item) => item.id === id);
+    if (!product) {
+      throw new Error('未找到商品');
+    }
+    const nextStatus: 'on' | 'off' = product.status === 'on' ? 'off' : 'on';
+    await toggleProductStatus({ productId: id, status: nextStatus });
     set((state) => ({
-      products: state.products.map((prod) =>
-        prod.id === id ? { ...prod, ...patch } : prod
+      products: state.products.map((item) =>
+        item.id === id ? { ...item, status: nextStatus } : item,
       ),
-    })),
-  toggleStatus: (id) =>
-    set((state) => ({
-      products: state.products.map((prod) =>
-        prod.id === id
-          ? { ...prod, status: prod.status === 'on' ? 'off' : 'on' }
-          : prod
-      ),
-    })),
+    }));
+    return nextStatus;
+  },
 }));
-
 

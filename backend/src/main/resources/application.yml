@@ -2,6 +2,11 @@ spring:
   application:
     name: agriverse-auth
 
+  servlet:
+    multipart:
+      max-file-size: 10MB
+      max-request-size: 10MB
+
   # 数据源配置
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
@@ -103,6 +108,9 @@ app:
   name: AgriVerse 农业产品融销平台
   version: 1.0.0
   description: 农业产品融销一体化平台
+  file-upload:
+    base-dir: uploads
+    max-size-mb: 5
 
 ---
   # 开发环境配置（使用MySQL数据库）

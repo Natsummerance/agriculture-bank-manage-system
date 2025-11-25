@@ -272,7 +272,45 @@ public class FarmerProductApiTest {
         }
 
         /**
-         * 测试5：商品上架操作
+         * 测试5：创建商品
+         */
+        @Test
+        public void testCreateProduct() {
+                HttpHeaders headers = createAuthHeaders();
+
+                Map<String, Object> requestBody = new HashMap<>();
+                requestBody.put("name", "自动化测试商品");
+                requestBody.put("category", "测试分类");
+                requestBody.put("price", 12.34);
+                requestBody.put("stock", 77);
+                requestBody.put("origin", "测试产地");
+                requestBody.put("description", "集成测试创建的商品");
+
+                HttpEntity<Map<String, Object>> request = new HttpEntity<>(requestBody, headers);
+                ParameterizedTypeReference<Map<String, Object>> typeRef = new ParameterizedTypeReference<Map<String, Object>>() {
+                };
+
+                ResponseEntity<Map<String, Object>> response = restTemplate.exchange(
+                                getBaseUrl() + "/farmer/products/create",
+                                HttpMethod.POST,
+                                request,
+                                typeRef);
+
+                assertEquals(HttpStatus.OK, response.getStatusCode());
+                assertNotNull(response.getBody());
+
+                Map<String, Object> body = response.getBody();
+                assertTrue(body.containsKey("data"));
+                Map<String, Object> data = (Map<String, Object>) body.get("data");
+                assertEquals("自动化测试商品", data.get("name"));
+                assertEquals("off", data.get("status"));
+
+                List<FarmerProduct> products = farmerProductRepository.findByFarmerId(farmerId);
+                assertTrue(products.stream().anyMatch(p -> "自动化测试商品".equals(p.getName())));
+        }
+
+        /**
+         * 测试6：商品上架操作
          */
         @Test
         @Transactional
@@ -303,7 +341,7 @@ public class FarmerProductApiTest {
         }
 
         /**
-         * 测试6：商品下架操作
+         * 测试7：商品下架操作
          */
         @Test
         @Transactional
@@ -334,7 +372,7 @@ public class FarmerProductApiTest {
         }
 
         /**
-         * 测试7：获取商品数据看板
+         * 测试8：获取商品数据看板
          */
         @Test
         public void testGetProductDashboard() {
@@ -369,7 +407,7 @@ public class FarmerProductApiTest {
         }
 
         /**
-         * 测试8：未认证访问应该返回401
+         * 测试9：未认证访问应该返回401
          */
         @Test
         public void testUnauthenticatedAccess() {
@@ -389,7 +427,7 @@ public class FarmerProductApiTest {
         }
 
         /**
-         * 测试9：操作其他农户的商品应该失败
+         * 测试10：操作其他农户的商品应该失败
          */
         @Test
         public void testAccessOtherFarmerProduct() {
@@ -436,7 +474,7 @@ public class FarmerProductApiTest {
         }
 
         /**
-         * 测试10：综合测试 - 完整的商品管理流程
+         * 测试11：综合测试 - 完整的商品管理流程
          */
         @Test
         @Transactional

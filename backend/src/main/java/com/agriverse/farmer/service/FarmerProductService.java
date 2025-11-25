@@ -29,6 +29,35 @@ public class FarmerProductService {
         private FarmerProductRepository farmerProductRepository;
 
         /**
+         * 创建商品
+         */
+        public ProductListResponse.ProductItem createProduct(String farmerId, CreateProductRequest request) {
+                log.info("创建商品: farmerId={}, name={}, category={}",
+                                farmerId, request.getName(), request.getCategory());
+
+                LocalDateTime now = LocalDateTime.now();
+                FarmerProduct product = FarmerProduct.builder()
+                                .farmerId(farmerId)
+                                .name(request.getName())
+                                .category(request.getCategory())
+                                .price(request.getPrice())
+                                .stock(request.getStock())
+                                .origin(request.getOrigin())
+                                .description(request.getDescription())
+                                .status(FarmerProduct.ProductStatus.OFF)
+                                .viewCount(0)
+                                .favoriteCount(0)
+                                .shareCount(0)
+                                .createdAt(now)
+                                .updatedAt(now)
+                                .build();
+
+                FarmerProduct savedProduct = farmerProductRepository.save(product);
+                log.info("商品创建成功: productId={}", savedProduct.getId());
+                return convertToProductItem(savedProduct);
+        }
+
+        /**
          * 获取商品列表（支持搜索和状态筛选）
          */
         public ProductListResponse getProductList(String farmerId, ProductListRequest request) {

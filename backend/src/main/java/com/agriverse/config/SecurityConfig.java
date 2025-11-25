@@ -83,7 +83,7 @@ public class SecurityConfig {
                         // 在Spring Boot 3.x中，当设置了context-path时，Spring Security的路径匹配
                         // 使用的是servlet path（不包含context-path），所以配置路径应该是/auth/login
                         .requestMatchers("/auth/**", "/farmer/products/health", "/swagger-ui/**", "/v3/api-docs/**",
-                                "/error")
+                                "/error", "/uploads/**")
                         .permitAll()
                         // 其他所有请求需要认证
                         .anyRequest().authenticated())

@@ -50,6 +50,18 @@ export interface ToggleStatusRequest {
 }
 
 /**
+ * 创建商品请求
+ */
+export interface CreateProductRequest {
+  name: string;
+  category: string;
+  price: number;
+  stock: number;
+  origin: string;
+  description?: string;
+}
+
+/**
  * 热门商品
  */
 export interface TopProduct {
@@ -118,6 +130,17 @@ export async function toggleProductStatus(
   request: ToggleStatusRequest
 ): Promise<void> {
   return post<void>('/farmer/products/toggle-status', request);
+}
+
+/**
+ * 创建农户商品
+ * @param request 创建商品请求
+ * @returns 创建后的商品数据
+ */
+export async function createFarmerProduct(
+  request: CreateProductRequest
+): Promise<FarmerProduct> {
+  return post<FarmerProduct>('/farmer/products/create', request);
 }
 
 /**

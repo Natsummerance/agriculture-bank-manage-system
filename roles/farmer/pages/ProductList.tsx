@@ -1,6 +1,6 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { motion } from "motion/react";
-import { BarChart3, Package, Plus } from "lucide-react";
+import { BarChart3, Loader2, Package, Plus } from "lucide-react";
 import { useFarmerProductStore } from "../../../stores/farmerProductStore";
 import { SearchBar, FilterPanel, RichTextEditor } from "../../../components/common";
 import { Button } from "../../../components/ui/button";
@@ -30,27 +30,50 @@ const productSchema = z.object({
 });
 
 export default function FarmerProductList() {
-  const { products, addProduct, toggleStatus } = useFarmerProductStore();
+  const products = useFarmerProductStore((state) => state.products);
+  const addProduct = useFarmerProductStore((state) => state.addProduct);
+  const toggleStatus = useFarmerProductStore((state) => state.toggleStatus);
+  const fetchProducts = useFarmerProductStore((state) => state.fetchProducts);
+  const loading = useFarmerProductStore((state) => state.loading);
+  const initialized = useFarmerProductStore((state) => state.initialized);
+  const storeError = useFarmerProductStore((state) => state.error);
   const [search, setSearch] = useState("");
   const [status, setStatus] = useState<string>("all");
   const [open, setOpen] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [togglingId, setTogglingId] = useState<string | null>(null);
 
   const form = useZodForm(productSchema);
 
-  const filtered = products.filter((p) => {
-    const matchSearch =
-      !search ||
-      p.name.toLowerCase().includes(search.toLowerCase()) ||
-      p.origin.toLowerCase().includes(search.toLowerCase());
-    const matchStatus = status === "all" || p.status === status;
-    return matchSearch && matchStatus;
-  });
+  useEffect(() => {
+    const handler = setTimeout(() => {
+      fetchProducts({
+        search: search.trim() ? search.trim() : undefined,
+        status: status === "all" ? undefined : status,
+      }).catch((error) => {
+        console.error("获取商品列表失败", error);
+        toast.error(error instanceof Error ? error.message : "获取商品列表失败");
+      });
+    }, initialized ? 400 : 0);
 
-  const onSubmit = form.handleSubmit((values) => {
-    addProduct(values);
-    toast.success("商品已发布（本地模拟）");
-    setOpen(false);
-    form.reset();
+    return () => clearTimeout(handler);
+  }, [search, status, fetchProducts, initialized]);
+
+  const filtered = products;
+
+  const onSubmit = form.handleSubmit(async (values) => {
+    try {
+      setIsSubmitting(true);
+      await addProduct(values);
+      toast.success("商品已发布，默认状态为“已下架”");
+      setOpen(false);
+      form.reset();
+    } catch (error) {
+      console.error("发布商品失败", error);
+      toast.error(error instanceof Error ? error.message : "发布商品失败，请稍后重试");
+    } finally {
+      setIsSubmitting(false);
+    }
   });
 
   return (
@@ -85,6 +108,18 @@ export default function FarmerProductList() {
             />
           </div>
         </motion.div>
+
+        {loading && (
+          <div className="flex items-center gap-2 text-white/60 text-sm">
+            <Loader2 className="w-4 h-4 animate-spin" />
+            数据加载中...
+          </div>
+        )}
+        {storeError && (
+          <div className="text-sm text-red-400">
+            {storeError}
+          </div>
+        )}
 
         <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
           <FilterPanel
@@ -198,8 +233,8 @@ export default function FarmerProductList() {
                         )}
                       />
                       <DialogFooter>
-                        <Button type="submit" size="sm">
-                          发布
+                        <Button type="submit" size="sm" disabled={isSubmitting}>
+                          {isSubmitting ? "发布中..." : "发布"}
                         </Button>
                       </DialogFooter>
                     </form>
@@ -210,7 +245,7 @@ export default function FarmerProductList() {
           />
         </div>
 
-        {filtered.length === 0 ? (
+        {filtered.length === 0 && !loading ? (
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
@@ -258,14 +293,27 @@ export default function FarmerProductList() {
                   <Button
                     variant="outline"
                     size="sm"
-                    onClick={() => {
-                      toggleStatus(p.id);
-                      toast.success(
-                        p.status === "on" ? "已下架" : "已上架",
-                      );
+                    disabled={togglingId === p.id}
+                    onClick={async () => {
+                      try {
+                        setTogglingId(p.id);
+                        const nextStatus = await toggleStatus(p.id);
+                        toast.success(nextStatus === "on" ? "商品已上架" : "商品已下架");
+                      } catch (error) {
+                        console.error("切换商品状态失败", error);
+                        toast.error(error instanceof Error ? error.message : "操作失败，请稍后重试");
+                      } finally {
+                        setTogglingId(null);
+                      }
                     }}
                   >
-                    {p.status === "on" ? "下架" : "上架"}
+                    {togglingId === p.id ? (
+                      <Loader2 className="w-4 h-4 animate-spin" />
+                    ) : p.status === "on" ? (
+                      "下架"
+                    ) : (
+                      "上架"
+                    )}
                   </Button>
                 </div>
               </motion.div>

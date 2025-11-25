@@ -2,6 +2,7 @@ import { useState } from "react";
 import { FileUploader } from "../../../components/common";
 import { Button } from "../../../components/ui/button";
 import { useFarmerProductStore } from "../../../stores/farmerProductStore";
+import { toast } from "sonner";
 
 interface ParsedRow {
   name: string;
@@ -14,6 +15,7 @@ interface ParsedRow {
 export default function ProductImport() {
   const [rows, setRows] = useState<ParsedRow[]>([]);
   const { addProduct } = useFarmerProductStore();
+  const [isImporting, setIsImporting] = useState(false);
 
   const handleUploaded = async (file: { url: string; filename: string }) => {
     // 简单示意：真实解析应使用 SheetJS 等库，这里只做占位
@@ -37,17 +39,31 @@ export default function ProductImport() {
     ]);
   };
 
-  const handleImport = () => {
-    rows.forEach((r) =>
-      addProduct({
-        name: r.name,
-        category: r.category,
-        price: r.price,
-        stock: r.stock,
-        origin: r.origin,
-        description: "",
-      }),
-    );
+  const handleImport = async () => {
+    if (rows.length === 0 || isImporting) {
+      return;
+    }
+    setIsImporting(true);
+    try {
+      await Promise.all(
+        rows.map((r) =>
+          addProduct({
+            name: r.name,
+            category: r.category,
+            price: r.price,
+            stock: r.stock,
+            origin: r.origin,
+            description: "",
+          }),
+        ),
+      );
+      toast.success("批量导入成功，商品已写入数据库");
+    } catch (error) {
+      console.error("批量导入失败", error);
+      toast.error(error instanceof Error ? error.message : "批量导入失败");
+    } finally {
+      setIsImporting(false);
+    }
   };
 
   return (
@@ -81,8 +97,8 @@ export default function ProductImport() {
               </div>
             </div>
           ))}
-          <Button size="sm" onClick={handleImport}>
-            批量导入到商品列表（本地模拟）
+          <Button size="sm" onClick={handleImport} disabled={isImporting}>
+            {isImporting ? "导入中..." : "批量导入到商品列表"}
           </Button>
         </div>
       )}

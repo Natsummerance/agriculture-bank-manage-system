@@ -1,4 +1,6 @@
 import { create } from 'zustand';
+import { createBuyerOrder, type CreateOrderRequest } from '../api/buyer';
+import { useCartStore } from './cartStore';
 
 interface Address {
   id: string;
@@ -187,19 +189,43 @@ export const useCheckoutStore = create<CheckoutStore>((set, get) => ({
   },
 
   submitOrder: async () => {
-    const { selectedAddress, cartItems, selectedCoupon, installmentEnabled, installmentMonths, paymentMethod } = get();
+    const { selectedAddress, paymentMethod } = get();
+    const cartStore = useCartStore.getState();
+    const selectedItems = cartStore.items.filter(item => item.selected);
     
     if (!selectedAddress) {
       throw new Error('请选择收货地址');
     }
 
-    // Simulate biometric authentication
-    await new Promise((resolve) => setTimeout(resolve, 1500));
+    if (selectedItems.length === 0) {
+      throw new Error('请选择要结算的商品');
+    }
 
-    // Simulate blockchain hash
-    const blockchainHash = `0x${Math.random().toString(16).slice(2, 34)}`;
-    const orderId = `ORD-${Date.now()}`;
+    // 构建订单请求
+    const orderRequest: CreateOrderRequest = {
+      items: selectedItems.map(item => ({
+        productId: item.productId,
+        quantity: item.quantity,
+      })),
+      shippingName: selectedAddress.name,
+      shippingPhone: selectedAddress.phone,
+      shippingAddress: `${selectedAddress.province} ${selectedAddress.city} ${selectedAddress.district} ${selectedAddress.detail}`,
+      paymentMethod: paymentMethod,
+    };
 
-    return { orderId, blockchainHash };
+    // 调用后端API创建订单
+    try {
+      const order = await createBuyerOrder(orderRequest);
+      
+      // 清空购物车
+      cartStore.clearSelected();
+      
+      // Simulate blockchain hash (实际应该从后端返回)
+      const blockchainHash = `0x${Math.random().toString(16).slice(2, 34)}`;
+
+      return { orderId: order.id, blockchainHash };
+    } catch (error: any) {
+      throw new Error(error.message || '创建订单失败');
+    }
   },
 }));

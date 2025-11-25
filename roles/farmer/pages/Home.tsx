@@ -1,5 +1,5 @@
 import { motion } from "motion/react";
-import { useMemo } from "react";
+import { useEffect, useMemo } from "react";
 import {
   Sprout,
   ShoppingBasket,
@@ -16,9 +16,19 @@ import { useFarmerOrderStore } from "../../../stores/farmerOrderStore";
 import { useFinancingStore } from "../../../stores/financingStore";
 
 export default function FarmerHome() {
-  const { products } = useFarmerProductStore();
+  const products = useFarmerProductStore((state) => state.products);
+  const fetchProducts = useFarmerProductStore((state) => state.fetchProducts);
+  const initialized = useFarmerProductStore((state) => state.initialized);
   const { orders } = useFarmerOrderStore();
   const { list: financingList } = useFinancingStore();
+
+  useEffect(() => {
+    if (!initialized) {
+      fetchProducts().catch((error) => {
+        console.error("加载商品数据失败", error);
+      });
+    }
+  }, [initialized, fetchProducts]);
 
   const stats = useMemo(() => {
     const onShelf = products.filter((p) => p.status === "on");

@@ -27,10 +27,16 @@ backend/
 │   │   ├── controller/       # 农户商品控制器
 │   │   ├── service/          # 农户商品服务
 │   │   └── repository/       # 农户商品数据访问层
+│   ├── buyer/                # 买家模块
+│   │   ├── controller/       # 买家商品和订单控制器
+│   │   ├── service/          # 买家商品和订单服务
+│   │   └── repository/       # 买家订单数据访问层
 │   ├── entity/               # JPA 实体类
 │   │   ├── User.java         # 用户实体
 │   │   ├── VerificationCode.java  # 验证码实体
-│   │   └── FarmerProduct.java      # 农户商品实体
+│   │   ├── FarmerProduct.java      # 农户商品实体
+│   │   ├── BuyerOrder.java         # 买家订单实体
+│   │   └── BuyerOrderItem.java     # 买家订单项实体
 │   ├── dto/                  # 数据传输对象
 │   ├── config/               # 配置类（安全、JWT等）
 │   ├── util/                 # 工具类（JWT提供者等）
@@ -397,7 +403,57 @@ Authorization: Bearer eyJhbGciOiJIUzUxMiJ9...
 }
 ```
 
-### 2. 商品上下架
+### 2. 创建商品
+
+**请求**
+```
+POST /api/farmer/products/create
+Authorization: Bearer eyJhbGciOiJIUzUxMiJ9...
+Content-Type: application/json
+
+{
+  "name": "五常大米",
+  "category": "粮食",
+  "price": 58,
+  "stock": 1000,
+  "origin": "黑龙江五常",
+  "description": "优质五常大米"
+}
+```
+
+**请求体参数**:
+- `name` (必需): 商品名称，最长200字符
+- `category` (必需): 商品类别，最长100字符
+- `price` (必需): 商品价格，必须大于0
+- `stock` (必需): 库存数量，不能为负
+- `origin` (必需): 产地信息，最长200字符
+- `description` (可选): 图文详情，最长4000字符
+
+**响应**
+```json
+{
+  "code": 0,
+  "message": "商品创建成功",
+  "success": true,
+  "data": {
+    "id": "uuid",
+    "name": "五常大米",
+    "category": "粮食",
+    "price": 58,
+    "stock": 1000,
+    "origin": "黑龙江五常",
+    "description": "优质五常大米",
+    "status": "off",
+    "viewCount": 0,
+    "favoriteCount": 0,
+    "shareCount": 0,
+    "createdAt": "2025-01-01T10:00:00",
+    "updatedAt": "2025-01-01T10:00:00"
+  }
+}
+```
+
+### 3. 商品上下架
 
 **请求**
 ```
@@ -425,7 +481,7 @@ Content-Type: application/json
 }
 ```
 
-### 3. 获取商品数据看板
+### 4. 获取商品数据看板
 
 **请求**
 ```
@@ -492,6 +548,343 @@ Authorization: Bearer eyJhbGciOiJIUzUxMiJ9...
 **请求**
 ```
 GET /api/farmer/products/health
+```
+
+**响应**
+```json
+{
+  "code": 0,
+  "message": "操作成功",
+  "success": true,
+  "data": "OK"
+}
+```
+
+## 买家商品市场 API
+
+### 1. 获取商品列表（买家市场）
+
+**请求**
+```
+GET /api/buyer/products/list?search=大米&category=粮食&page=1&pageSize=20
+Authorization: Bearer eyJhbGciOiJIUzUxMiJ9...
+```
+
+**查询参数**:
+- `search` (可选): 搜索关键词（商品名称或产地）
+- `category` (可选): 类别筛选
+- `page` (可选): 页码，从1开始，默认 `1`
+- `pageSize` (可选): 每页数量，默认 `20`
+
+**说明**: 此接口仅返回状态为"已上架"的商品，供买家浏览和购买。
+
+**响应**
+```json
+{
+  "code": 0,
+  "message": "获取成功",
+  "success": true,
+  "data": {
+    "products": [
+      {
+        "id": "uuid",
+        "name": "五常大米",
+        "category": "粮食",
+        "price": 58.00,
+        "stock": 1000,
+        "origin": "黑龙江五常",
+        "description": "优质五常大米",
+        "farmerId": "farmer-uuid",
+        "farmerName": "张三",
+        "viewCount": 1250,
+        "favoriteCount": 89,
+        "shareCount": 23,
+        "createdAt": "2025-01-01T10:00:00"
+      }
+    ],
+    "total": 50,
+    "page": 1,
+    "pageSize": 20
+  }
+}
+```
+
+### 2. 获取商品详情
+
+**请求**
+```
+GET /api/buyer/products/{productId}
+Authorization: Bearer eyJhbGciOiJIUzUxMiJ9...
+```
+
+**路径参数**:
+- `productId` (必需): 商品ID
+
+**说明**: 访问商品详情时会自动增加浏览量。
+
+**响应**
+```json
+{
+  "code": 0,
+  "message": "获取成功",
+  "success": true,
+  "data": {
+    "id": "uuid",
+    "name": "五常大米",
+    "category": "粮食",
+    "price": 58.00,
+    "stock": 1000,
+    "origin": "黑龙江五常",
+    "description": "优质五常大米，颗粒饱满，口感香甜",
+    "farmerId": "farmer-uuid",
+    "farmerName": "张三",
+    "farmerPhone": "13800138000",
+    "viewCount": 1251,
+    "favoriteCount": 89,
+    "shareCount": 23,
+    "createdAt": "2025-01-01T10:00:00",
+    "updatedAt": "2025-01-15T14:30:00"
+  }
+}
+```
+
+### 3. 买家商品健康检查
+
+**请求**
+```
+GET /api/buyer/products/health
+```
+
+**响应**
+```json
+{
+  "code": 0,
+  "message": "操作成功",
+  "success": true,
+  "data": "OK"
+}
+```
+
+## 买家订单管理 API
+
+### 1. 创建订单
+
+**请求**
+```
+POST /api/buyer/orders
+Authorization: Bearer eyJhbGciOiJIUzUxMiJ9...
+Content-Type: application/json
+
+{
+  "items": [
+    {
+      "productId": "product-uuid-1",
+      "quantity": 2
+    },
+    {
+      "productId": "product-uuid-2",
+      "quantity": 1
+    }
+  ],
+  "shippingName": "李四",
+  "shippingPhone": "13900139000",
+  "shippingAddress": "四川省成都市武侯区天府大道中段1号",
+  "paymentMethod": "alipay"
+}
+```
+
+**请求体参数**:
+- `items` (必需): 订单项数组
+  - `productId` (必需): 商品ID
+  - `quantity` (必需): 购买数量，必须大于0
+- `shippingName` (必需): 收货人姓名
+- `shippingPhone` (必需): 收货人手机号
+- `shippingAddress` (必需): 收货地址
+- `paymentMethod` (必需): 支付方式（如：alipay, wechat, bank等）
+
+**说明**: 
+- 创建订单时会自动检查商品是否已上架
+- 自动检查库存是否充足
+- 订单创建成功后会自动扣减商品库存
+- 订单初始状态为 `pending`（待支付）
+
+**响应**
+```json
+{
+  "code": 0,
+  "message": "订单创建成功",
+  "success": true,
+  "data": {
+    "id": "order-uuid",
+    "buyerId": "buyer-uuid",
+    "status": "pending",
+    "totalAmount": 176.00,
+    "shippingName": "李四",
+    "shippingPhone": "13900139000",
+    "shippingAddress": "四川省成都市武侯区天府大道中段1号",
+    "paymentMethod": "alipay",
+    "items": [
+      {
+        "id": "item-uuid-1",
+        "productId": "product-uuid-1",
+        "productName": "五常大米",
+        "price": 58.00,
+        "quantity": 2,
+        "productImage": null
+      },
+      {
+        "id": "item-uuid-2",
+        "productId": "product-uuid-2",
+        "productName": "生态鸡蛋",
+        "price": 60.00,
+        "quantity": 1,
+        "productImage": null
+      }
+    ],
+    "createdAt": "2025-01-20T10:00:00",
+    "updatedAt": "2025-01-20T10:00:00"
+  }
+}
+```
+
+### 2. 获取订单列表
+
+**请求**
+```
+GET /api/buyer/orders?status=pending&page=1&pageSize=20
+Authorization: Bearer eyJhbGciOiJIUzUxMiJ9...
+```
+
+**查询参数**:
+- `status` (可选): 订单状态筛选，可选值：`all`（全部）、`pending`（待支付）、`paid`（已支付）、`to-ship`（待发货）、`shipped`（已发货）、`completed`（已完成）、`refunding`（退款中）、`refunded`（已退款）、`cancelled`（已取消），默认 `all`
+- `page` (可选): 页码，从1开始，默认 `1`
+- `pageSize` (可选): 每页数量，默认 `20`
+
+**响应**
+```json
+{
+  "code": 0,
+  "message": "获取成功",
+  "success": true,
+  "data": {
+    "orders": [
+      {
+        "id": "order-uuid",
+        "buyerId": "buyer-uuid",
+        "status": "pending",
+        "totalAmount": 176.00,
+        "shippingName": "李四",
+        "shippingPhone": "13900139000",
+        "shippingAddress": "四川省成都市武侯区天府大道中段1号",
+        "paymentMethod": "alipay",
+        "items": [...],
+        "createdAt": "2025-01-20T10:00:00",
+        "updatedAt": "2025-01-20T10:00:00"
+      }
+    ],
+    "total": 10,
+    "page": 1,
+    "pageSize": 20
+  }
+}
+```
+
+### 3. 获取订单详情
+
+**请求**
+```
+GET /api/buyer/orders/{orderId}
+Authorization: Bearer eyJhbGciOiJIUzUxMiJ9...
+```
+
+**路径参数**:
+- `orderId` (必需): 订单ID
+
+**说明**: 只能查询当前登录买家的订单。
+
+**响应**
+```json
+{
+  "code": 0,
+  "message": "获取成功",
+  "success": true,
+  "data": {
+    "id": "order-uuid",
+    "buyerId": "buyer-uuid",
+    "status": "pending",
+    "totalAmount": 176.00,
+    "shippingName": "李四",
+    "shippingPhone": "13900139000",
+    "shippingAddress": "四川省成都市武侯区天府大道中段1号",
+    "paymentMethod": "alipay",
+    "items": [...],
+    "createdAt": "2025-01-20T10:00:00",
+    "updatedAt": "2025-01-20T10:00:00"
+  }
+}
+```
+
+### 4. 更新订单状态
+
+**请求**
+```
+PUT /api/buyer/orders/{orderId}/status
+Authorization: Bearer eyJhbGciOiJIUzUxMiJ9...
+Content-Type: application/json
+
+{
+  "status": "paid"
+}
+```
+
+**路径参数**:
+- `orderId` (必需): 订单ID
+
+**请求体参数**:
+- `status` (必需): 目标订单状态
+
+**说明**: 用于更新订单状态，如将订单从 `pending` 更新为 `paid`。
+
+**响应**
+```json
+{
+  "code": 0,
+  "message": "订单状态已更新",
+  "success": true,
+  "data": null
+}
+```
+
+### 5. 取消订单
+
+**请求**
+```
+POST /api/buyer/orders/{orderId}/cancel
+Authorization: Bearer eyJhbGciOiJIUzUxMiJ9...
+```
+
+**路径参数**:
+- `orderId` (必需): 订单ID
+
+**说明**: 
+- 只能取消状态为 `pending`（待支付）或 `paid`（已支付）的订单
+- 取消订单时会自动恢复商品库存
+
+**响应**
+```json
+{
+  "code": 0,
+  "message": "订单已取消",
+  "success": true,
+  "data": null
+}
+```
+
+### 6. 买家订单健康检查
+
+**请求**
+```
+GET /api/buyer/orders/health
 ```
 
 **响应**
@@ -657,6 +1050,29 @@ server:
 - `createdAt`: 创建时间
 - `updatedAt`: 更新时间
 
+### 买家订单表 (buyer_orders)
+- `id`: UUID主键
+- `buyerId`: 买家ID（索引）
+- `status`: 订单状态（PENDING-待支付, PAID-已支付, TO_SHIP-待发货, SHIPPED-已发货, COMPLETED-已完成, REFUNDING-退款中, REFUNDED-已退款, CANCELLED-已取消，索引）
+- `totalAmount`: 订单总金额
+- `shippingName`: 收货人姓名
+- `shippingPhone`: 收货人手机号
+- `shippingAddress`: 收货地址
+- `paymentMethod`: 支付方式
+- `refundStatus`: 退款状态（PENDING-待卖家处理, APPROVED-卖家已同意, REJECTED-卖家已拒绝, ESCALATED-已申请平台仲裁, SUCCESS-平台已判定退款成功, FAILED-平台已判定退款失败）
+- `refundReason`: 退款原因
+- `createdAt`: 创建时间（索引）
+- `updatedAt`: 更新时间
+
+### 买家订单项表 (buyer_order_items)
+- `id`: UUID主键
+- `orderId`: 订单ID（外键，索引）
+- `productId`: 商品ID（索引）
+- `productName`: 商品名称（冗余字段，便于查询）
+- `price`: 商品单价（下单时的价格，防止商品价格变动影响历史订单）
+- `quantity`: 购买数量
+- `productImage`: 商品图片URL（可选）
+
 ## 生产部署
 
 ### 1. 修改 JWT 密钥
@@ -731,6 +1147,18 @@ mvn test
 - 商品上下架操作
 - 商品数据看板统计
 
+### 买家商品市场模块 (buyer)
+- 商品列表查询（仅显示已上架商品，支持搜索和分类筛选）
+- 商品详情查看（自动增加浏览量）
+- 商品信息展示（包含农户信息）
+
+### 买家订单管理模块 (buyer)
+- 订单创建（自动检查商品状态和库存，自动扣减库存）
+- 订单列表查询（支持状态筛选和分页）
+- 订单详情查询
+- 订单状态更新
+- 订单取消（自动恢复库存）
+
 ## 常见问题
 
 ### Q: 如何修改端口？
@@ -763,6 +1191,31 @@ A: 后端通过 `Principal` 获取当前登录用户ID，在 Service 层验证 `
 
 ### Q: 商品数据看板的趋势数据是真实的吗？
 A: 当前版本的趋势数据是模拟生成的。实际项目中应建立统计数据表，记录每日的浏览量、收藏量等数据，从统计数据表查询真实趋势。
+
+### Q: 买家如何查看所有农户发布的商品？
+A: 买家通过 `/api/buyer/products/list` 接口可以查看所有状态为"已上架"的商品。此接口会自动过滤掉已下架的商品。
+
+### Q: 创建订单时如何保证库存一致性？
+A: 订单创建时会在事务中完成以下操作：
+1. 检查商品是否已上架
+2. 检查库存是否充足
+3. 创建订单和订单项
+4. 扣减商品库存
+如果任何一步失败，整个事务会回滚，保证数据一致性。
+
+### Q: 取消订单时库存如何恢复？
+A: 取消订单时，系统会遍历订单中的所有商品，将购买数量加回到商品库存中。只有状态为 `pending` 或 `paid` 的订单可以取消。
+
+### Q: 订单状态有哪些？
+A: 订单状态包括：
+- `pending`: 待支付
+- `paid`: 已支付
+- `to-ship`: 待发货
+- `shipped`: 已发货
+- `completed`: 已完成
+- `refunding`: 退款中
+- `refunded`: 已退款
+- `cancelled`: 已取消
 
 ## 许可证
 

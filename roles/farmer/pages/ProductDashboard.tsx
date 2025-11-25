@@ -1,8 +1,10 @@
 import { useFarmerProductStore } from "../../../stores/farmerProductStore";
-import { useMemo } from "react";
+import { useEffect, useMemo } from "react";
 import { motion } from "motion/react";
-import { Eye, Heart, Share2, TrendingUp, Package } from "lucide-react";
+import { Eye, Heart, Share2, TrendingUp, Package, ArrowLeft } from "lucide-react";
 import { StatsCard, SimpleLineChart } from "../../../components/common";
+import { navigateToSubRoute } from "../../../utils/subRouteNavigation";
+import { Button } from "../../../components/ui/button";
 
 const mockTrend = [
   { name: "近5天前", value: 20 },
@@ -14,7 +16,17 @@ const mockTrend = [
 ];
 
 export default function ProductDashboard() {
-  const { products } = useFarmerProductStore();
+  const products = useFarmerProductStore((state) => state.products);
+  const fetchProducts = useFarmerProductStore((state) => state.fetchProducts);
+  const initialized = useFarmerProductStore((state) => state.initialized);
+
+  useEffect(() => {
+    if (!initialized) {
+      fetchProducts().catch((error) => {
+        console.error("加载商品数据失败", error);
+      });
+    }
+  }, [initialized, fetchProducts]);
 
   const stats = useMemo(() => {
     const totalView = products.reduce((sum, p) => sum + (p.viewCount ?? 0), 0);
@@ -38,13 +50,23 @@ export default function ProductDashboard() {
           animate={{ opacity: 1, y: 0 }}
           className="flex flex-col md:flex-row md:items-center md:justify-between gap-6"
         >
-          <div>
-            <h2 className="mb-3 text-3xl font-semibold text-transparent bg-clip-text bg-gradient-to-r from-[#18FF74] to-[#00D6C2]">
-              商品数据看板
-            </h2>
-            <p className="text-sm text-white/60">
-              查看商品浏览、收藏、分享等数据统计
-            </p>
+          <div className="flex items-center gap-4">
+            <Button
+              variant="ghost"
+              size="icon"
+              onClick={() => navigateToSubRoute("trade", "products")}
+              className="text-white/60 hover:text-white hover:bg-white/10"
+            >
+              <ArrowLeft className="w-5 h-5" />
+            </Button>
+            <div>
+              <h2 className="mb-3 text-3xl font-semibold text-transparent bg-clip-text bg-gradient-to-r from-[#18FF74] to-[#00D6C2]">
+                商品数据看板
+              </h2>
+              <p className="text-sm text-white/60">
+                查看商品浏览、收藏、分享等数据统计
+              </p>
+            </div>
           </div>
         </motion.div>
 
