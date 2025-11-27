@@ -56,11 +56,12 @@ export function EditProfileDialog({ isOpen, onClose }: DialogProps) {
           className="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex items-center justify-center p-4"
         >
           <motion.div
-            initial={{ scale: 0.9, opacity: 0, y: 20 }}
-            animate={{ scale: 1, opacity: 1, y: 0 }}
-            exit={{ scale: 0.9, opacity: 0, y: 20 }}
+            initial={{ scale: 0.9, opacity: 0, y: 20, rotate: -2 }}
+            animate={{ scale: 1, opacity: 1, y: 0, rotate: 0 }}
+            exit={{ scale: 0.9, opacity: 0, y: 20, rotate: 2 }}
+            transition={{ type: "spring", stiffness: 300, damping: 25 }}
             onClick={(e) => e.stopPropagation()}
-            className="w-full max-w-lg glass-morphism rounded-2xl p-6"
+            className="w-full max-w-lg max-h-[calc(100vh-4rem)] bg-[#0A0F1E]/95 backdrop-blur-xl border border-white/10 rounded-2xl p-6 shadow-2xl shadow-[#00D6C2]/10 overflow-y-auto"
           >
             {/* 头部 */}
             <div className="flex items-center justify-between mb-6">
@@ -210,11 +211,12 @@ export function NotificationSettingsDialog({ isOpen, onClose }: DialogProps) {
           className="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex items-center justify-center p-4"
         >
           <motion.div
-            initial={{ scale: 0.9, opacity: 0, y: 20 }}
-            animate={{ scale: 1, opacity: 1, y: 0 }}
-            exit={{ scale: 0.9, opacity: 0, y: 20 }}
+            initial={{ scale: 0.9, opacity: 0, y: 20, rotate: -2 }}
+            animate={{ scale: 1, opacity: 1, y: 0, rotate: 0 }}
+            exit={{ scale: 0.9, opacity: 0, y: 20, rotate: 2 }}
+            transition={{ type: "spring", stiffness: 300, damping: 25 }}
             onClick={(e) => e.stopPropagation()}
-            className="w-full max-w-lg glass-morphism rounded-2xl p-6"
+            className="w-full max-w-lg max-h-[calc(100vh-4rem)] bg-[#0A0F1E]/95 backdrop-blur-xl border border-white/10 rounded-2xl p-6 shadow-2xl shadow-[#00D6C2]/10 overflow-y-auto"
           >
             {/* 头部 */}
             <div className="flex items-center justify-between mb-6">
@@ -332,11 +334,12 @@ export function WalletDialog({ isOpen, onClose }: DialogProps) {
           className="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex items-center justify-center p-4"
         >
           <motion.div
-            initial={{ scale: 0.9, opacity: 0, y: 20 }}
-            animate={{ scale: 1, opacity: 1, y: 0 }}
-            exit={{ scale: 0.9, opacity: 0, y: 20 }}
+            initial={{ scale: 0.9, opacity: 0, y: 20, rotate: -2 }}
+            animate={{ scale: 1, opacity: 1, y: 0, rotate: 0 }}
+            exit={{ scale: 0.9, opacity: 0, y: 20, rotate: 2 }}
+            transition={{ type: "spring", stiffness: 300, damping: 25 }}
             onClick={(e) => e.stopPropagation()}
-            className="w-full max-w-2xl max-h-[90vh] overflow-y-auto glass-morphism rounded-2xl p-6"
+            className="w-full max-w-2xl max-h-[90vh] overflow-y-auto bg-[#0A0F1E]/95 backdrop-blur-xl border border-white/10 rounded-2xl p-6 shadow-2xl shadow-[#00D6C2]/10"
           >
             {/* 头部 */}
             <div className="flex items-center justify-between mb-6">
@@ -355,7 +358,7 @@ export function WalletDialog({ isOpen, onClose }: DialogProps) {
             </div>
 
             {/* 余额卡片 */}
-            <div className="glass-morphism rounded-xl p-6 mb-6 relative overflow-hidden">
+            <div className="bg-white/5 border border-white/10 rounded-xl p-6 mb-6 relative overflow-hidden">
               <div className="absolute top-0 right-0 w-32 h-32 bg-gradient-to-br from-[#00D6C2]/20 to-[#18FF74]/20 rounded-full blur-3xl" />
               <div className="relative">
                 <div className="text-sm text-white/60 mb-2">账户余额</div>
@@ -422,7 +425,7 @@ export function WalletDialog({ isOpen, onClose }: DialogProps) {
                   whileHover={{ scale: 1.05, y: -2 }}
                   whileTap={{ scale: 0.95 }}
                   onClick={action.onClick}
-                  className="p-4 rounded-lg glass-morphism flex flex-col items-center gap-2"
+                  className="p-4 rounded-lg bg-white/5 border border-white/10 flex flex-col items-center gap-2"
                 >
                   <action.icon className="w-6 h-6" style={{ color: action.color }} />
                   <span className="text-sm text-white/80">{action.label}</span>
@@ -443,7 +446,7 @@ export function WalletDialog({ isOpen, onClose }: DialogProps) {
                     initial={{ opacity: 0, x: -20 }}
                     animate={{ opacity: 1, x: 0 }}
                     transition={{ delay: i * 0.1 }}
-                    className="flex items-center justify-between p-4 rounded-lg glass-morphism"
+                    className="flex items-center justify-between p-4 rounded-lg bg-white/5 border border-white/10"
                   >
                     <div className="flex items-center gap-3">
                       <div className={`w-10 h-10 rounded-full flex items-center justify-center ${
@@ -504,11 +507,12 @@ export function PrivacySettingsDialog({ isOpen, onClose }: DialogProps) {
           className="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex items-center justify-center p-4"
         >
           <motion.div
-            initial={{ scale: 0.9, opacity: 0, y: 20 }}
-            animate={{ scale: 1, opacity: 1, y: 0 }}
-            exit={{ scale: 0.9, opacity: 0, y: 20 }}
+            initial={{ scale: 0.9, opacity: 0, y: 20, rotate: -2 }}
+            animate={{ scale: 1, opacity: 1, y: 0, rotate: 0 }}
+            exit={{ scale: 0.9, opacity: 0, y: 20, rotate: 2 }}
+            transition={{ type: "spring", stiffness: 300, damping: 25 }}
             onClick={(e) => e.stopPropagation()}
-            className="w-full max-w-lg glass-morphism rounded-2xl p-6"
+            className="w-full max-w-lg max-h-[calc(100vh-4rem)] bg-[#0A0F1E]/95 backdrop-blur-xl border border-white/10 rounded-2xl p-6 shadow-2xl shadow-[#00D6C2]/10 overflow-y-auto"
           >
             {/* 头部 */}
             <div className="flex items-center justify-between mb-6">

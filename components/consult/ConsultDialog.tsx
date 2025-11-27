@@ -202,10 +202,11 @@ export default function ConsultDialog({
   return (
     <AnimatePresence>
       <motion.div
-        initial={{ opacity: 0, scale: 0.9, y: 20 }}
-        animate={{ opacity: 1, scale: 1, y: 0 }}
-        exit={{ opacity: 0, scale: 0.9, y: 20 }}
-        className="fixed bottom-6 right-6 w-96 h-[600px] bg-[#0A0A0D] border border-white/10 rounded-2xl shadow-2xl flex flex-col z-50 overflow-hidden"
+        initial={{ opacity: 0, scale: 0.9, y: 20, rotate: -5 }}
+        animate={{ opacity: 1, scale: 1, y: 0, rotate: 0 }}
+        exit={{ opacity: 0, scale: 0.9, y: 20, rotate: 5 }}
+        transition={{ type: "spring", stiffness: 300, damping: 25 }}
+        className="fixed bottom-6 right-6 w-96 max-w-[calc(100vw-3rem)] max-h-[calc(100vh-8rem)] h-[600px] bg-[#0A0F1E]/95 backdrop-blur-xl border border-white/10 rounded-2xl shadow-2xl shadow-[#00D6C2]/20 flex flex-col z-50 overflow-hidden"
       >
         {/* Header */}
         <div className="flex items-center justify-between p-4 border-b border-white/10 bg-gradient-to-r from-[#00D6C2]/10 to-[#18FF74]/10">
@@ -333,7 +334,7 @@ export default function ConsultDialog({
         </div>
 
         {/* Input */}
-        <div className="p-4 border-t border-white/10 bg-[#0A0A0D]">
+        <div className="p-4 border-t border-white/10 bg-[#0A0F1E]/80 backdrop-blur-sm">
           {isRecording ? (
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-3">

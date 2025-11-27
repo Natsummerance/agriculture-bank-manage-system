@@ -199,7 +199,8 @@ export default function FarmerExpertPanel() {
                     <Button
                       variant="outline"
                       onClick={() => {
-                        navigateToSubRoute("expert", `appointment/book?expertId=${expert.id}`);
+                        // 农户在这里也可以快速进入专家直播间（如果专家在直播）
+                        navigateToSubRoute("expert", `live/join?expertId=${expert.id}`);
                       }}
                     >
                       <Video className="w-4 h-4" />
@@ -313,7 +314,15 @@ export default function FarmerExpertPanel() {
                       }`}>
                         {apt.status === "confirmed" ? "已确认" : "待确认"}
                       </span>
-                      <Button variant="outline" size="sm">
+                      <Button 
+                        variant="outline" 
+                        size="sm"
+                        // ⚡ 请添加 console.log
+                        onClick={() => {
+                            console.log(`[DEBUG] 尝试导航到会议室: live/join?appointmentId=${apt.id}`);
+                            navigateToSubRoute("expert", `live/join?appointmentId=${apt.id}`);
+                        }}
+                      >
                         <Video className="w-4 h-4 mr-2" />
                         进入会议室
                       </Button>
@@ -328,4 +337,3 @@ export default function FarmerExpertPanel() {
     </div>
   );
 }
-

@@ -5,6 +5,7 @@ import ExpertDashboardPage from "../roles/expert/pages/Dashboard";
 import ExpertFinancePanel from "../roles/expert/pages/ExpertFinancePanel";
 import ExpertQAList from "../roles/expert/pages/QAList";
 import ExpertKnowledge from "../roles/expert/pages/Knowledge";
+import ExpertKnowledgeDetail from "../roles/expert/pages/KnowledgeDetail";
 import ExpertProfilePanel from "../roles/expert/pages/ExpertProfilePanel";
 import { onNavigationChange } from "../utils/navigationEvents";
 import { onSubRouteChange } from "../utils/subRouteNavigation";
@@ -17,6 +18,13 @@ import ExpertIncomePanel from "../roles/expert/pages/ExpertIncomePanel";
 import ExpertQualificationUpload from "../roles/expert/pages/QualificationUpload";
 import ExpertServicePrice from "../roles/expert/pages/ServicePrice";
 import ExpertFarmerReview from "../roles/expert/pages/FarmerReview";
+// Profile 子页面
+import ExpertProfileEdit from "../roles/expert/pages/ProfileEdit";
+import ExpertNotificationCenter from "../roles/expert/pages/NotificationCenter";
+import ExpertBankCardManage from "../roles/expert/pages/BankCardManage";
+
+//直播
+import ExpertLiveStreamPage from "../roles/expert/pages/ExpertLiveStreamPage"; 
 
 type ExpertAppProps = {
   initialTab?: string;
@@ -32,16 +40,26 @@ export default function ExpertApp({ initialTab = "home", initialSubRoute }: Expe
       setActiveTab(tab);
       setActiveSubRoute(null);
     });
+    
+    // 关键修复：确保能接收跨 Tab 的子路由事件（例如从 home/dashboard 跳转到 expert/live）
     const unsubscribeSub = onSubRouteChange((tab, subRoute) => {
-      if (tab === activeTab) {
+      console.log(`[ExpertApp] Received sub-route event: Tab=${tab}, SubRoute=${subRoute}`);
+      
+      if (tab === 'expert') { 
+        // 只要是 'expert' 相关的子路由事件，就更新 activeTab 和 activeSubRoute
+        setActiveTab(tab); 
+        setActiveSubRoute(subRoute);
+      } else if (tab === activeTab) {
+        // 如果事件是当前 Tab 内部的切换
         setActiveSubRoute(subRoute);
       }
     });
+
     return () => {
       unsubscribeNav();
       unsubscribeSub();
     };
-  }, [activeTab]);
+  }, []);
 
   const renderContent = () => {
     if (activeSubRoute) {
@@ -81,8 +99,19 @@ export default function ExpertApp({ initialTab = "home", initialSubRoute }: Expe
   };
 
   const renderExpertSubRoute = (subRoute: string) => {
-    const [route, params] = subRoute.split("?");
+    // subRoute 可能是 "live" 或 "live/join?appointmentId=1"
+    const [route, params] = subRoute.split("?"); 
+    
     switch (route) {
+      // 专家自己进入推流模式 (ExpertDashboardPage 上的按钮)
+      case "live":
+        return <ExpertLiveStreamPage mode="publish" />;
+        
+      // 农户或买家进入会议模式 (FarmerExpertPanel 上的按钮)
+      case "live/join":
+        // params 是 URL 参数字符串 (例如 "appointmentId=1")
+        return <ExpertLiveStreamPage mode="join" params={params} />; 
+        
       case "qa/list":
         return <ExpertQAList />;
       case "qa/detail":
@@ -100,11 +129,12 @@ export default function ExpertApp({ initialTab = "home", initialSubRoute }: Expe
     const [route] = subRoute.split("?");
     switch (route) {
       case "list":
+      case "knowledge/list":
         return <ExpertKnowledge />;
       case "edit":
         return <ExpertArticleEdit />;
       case "detail":
-        return <ExpertKnowledge />; // TODO: 创建详情页
+        return <ExpertKnowledgeDetail />;
       default:
         return <ExpertKnowledge />;
     }
@@ -123,12 +153,20 @@ export default function ExpertApp({ initialTab = "home", initialSubRoute }: Expe
   const renderProfileSubRoute = (subRoute: string) => {
     const [route] = subRoute.split("?");
     switch (route) {
+      case "overview":
+        return <ExpertProfilePanel />;
+      case "edit":
+        return <ExpertProfileEdit />;
       case "qualification":
         return <ExpertQualificationUpload />;
       case "price":
         return <ExpertServicePrice />;
       case "farmer-review":
         return <ExpertFarmerReview />;
+      case "notifications":
+        return <ExpertNotificationCenter />;
+      case "bank-card":
+        return <ExpertBankCardManage />;
       default:
         return <ExpertProfilePanel />;
     }

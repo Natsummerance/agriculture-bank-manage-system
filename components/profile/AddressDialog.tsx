@@ -60,11 +60,12 @@ export function AddressDialog({ isOpen, onClose, address, onSave }: AddressDialo
           className="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex items-center justify-center p-4"
         >
           <motion.div
-            initial={{ scale: 0.9, opacity: 0, y: 20 }}
-            animate={{ scale: 1, opacity: 1, y: 0 }}
-            exit={{ scale: 0.9, opacity: 0, y: 20 }}
+            initial={{ scale: 0.9, opacity: 0, y: 20, rotate: -2 }}
+            animate={{ scale: 1, opacity: 1, y: 0, rotate: 0 }}
+            exit={{ scale: 0.9, opacity: 0, y: 20, rotate: 2 }}
+            transition={{ type: "spring", stiffness: 300, damping: 25 }}
             onClick={(e) => e.stopPropagation()}
-            className="w-full max-w-lg glass-morphism rounded-2xl p-6"
+            className="w-full max-w-lg bg-[#0A0F1E]/95 backdrop-blur-xl border border-white/10 rounded-2xl p-6 shadow-2xl shadow-[#00D6C2]/10"
           >
             {/* 头部 */}
             <div className="flex items-center justify-between mb-6">

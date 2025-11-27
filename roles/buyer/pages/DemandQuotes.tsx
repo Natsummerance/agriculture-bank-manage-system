@@ -5,6 +5,15 @@ import { MessageSquare, User, MapPin, Star, ArrowLeft } from "lucide-react";
 import { Button } from "../../../components/ui/button";
 import { navigateToSubRoute } from "../../../utils/subRouteNavigation";
 import { toast } from "sonner";
+import { useBuyerOrderStore } from "../../../stores/buyerOrderStore";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogDescription,
+  DialogFooter,
+} from "../../../components/ui/dialog";
 
 interface Quote {
   id: string;
@@ -46,10 +55,43 @@ const mockQuotes: Quote[] = [
 export default function BuyerDemandQuotes() {
   const { id } = useParams<{ id: string }>();
   const [quotes] = useState<Quote[]>(mockQuotes);
+  const [contactFarmerId, setContactFarmerId] = useState<string | null>(null);
+  const [acceptingQuoteId, setAcceptingQuoteId] = useState<string | null>(null);
+  const createOrderFromCart = useBuyerOrderStore((s) => s.createOrderFromCart);
 
-  const handleAcceptQuote = (quoteId: string) => {
-    toast.success(`已接受报价 #${quoteId}，正在跳转到订单页面...`);
-    // TODO: 创建订单并跳转
+  const handleAcceptQuote = async (quote: Quote) => {
+    try {
+      setAcceptingQuoteId(quote.id);
+      // 创建订单
+      const order = createOrderFromCart([
+        {
+          id: `item_${Date.now()}`,
+          productId: `product_${quote.id}`,
+          name: `来自${quote.farmerName}的报价商品`,
+          price: quote.price,
+          quantity: 1,
+        },
+      ]);
+      
+      if (order) {
+        toast.success(`已接受报价，订单已创建！`);
+        // 跳转到订单详情
+        setTimeout(() => {
+          navigateToSubRoute("trade", `order/detail?id=${order.id}`);
+        }, 1000);
+      }
+    } catch (error) {
+      console.error("接受报价失败:", error);
+      toast.error("接受报价失败，请稍后重试");
+    } finally {
+      setAcceptingQuoteId(null);
+    }
+  };
+
+  const handleContactFarmer = (farmerName: string) => {
+    setContactFarmerId(farmerName);
+    // 这里可以打开聊天对话框或跳转到聊天页面
+    // 目前先显示一个对话框
   };
 
   return (
@@ -126,16 +168,18 @@ export default function BuyerDemandQuotes() {
                     </div>
                     <div className="flex flex-col gap-2 ml-4">
                       <Button
-                        onClick={() => handleAcceptQuote(quote.id)}
+                        onClick={() => handleAcceptQuote(quote)}
+                        disabled={acceptingQuoteId === quote.id}
                         className="bg-gradient-to-r from-[#00D6C2] to-[#18FF74] text-black hover:opacity-90"
                       >
-                        接受报价
+                        {acceptingQuoteId === quote.id ? "处理中..." : "接受报价"}
                       </Button>
                       <Button
                         variant="outline"
                         size="sm"
-                        onClick={() => toast.info("联系农户功能待实现")}
+                        onClick={() => handleContactFarmer(quote.farmerName)}
                       >
+                        <MessageSquare className="w-4 h-4 mr-2" />
                         联系农户
                       </Button>
                     </div>
@@ -145,6 +189,61 @@ export default function BuyerDemandQuotes() {
             </div>
           )}
         </motion.section>
+
+        {/* 联系农户对话框 */}
+        <Dialog open={!!contactFarmerId} onOpenChange={(open) => !open && setContactFarmerId(null)}>
+          <DialogContent className="bg-slate-950 border-white/10 text-white">
+            <DialogHeader>
+              <DialogTitle>联系农户</DialogTitle>
+              <DialogDescription>
+                与 {contactFarmerId} 进行沟通
+              </DialogDescription>
+            </DialogHeader>
+            <div className="space-y-4 py-4">
+              <p className="text-sm text-white/60">
+                您可以通过以下方式联系农户：
+              </p>
+              <div className="space-y-2">
+                <Button
+                  variant="outline"
+                  className="w-full"
+                  onClick={() => {
+                    const farmer = quotes.find((q) => q.farmerId === contactFarmerId);
+                    if (farmer) {
+                      toast.success(`正在打开与 ${farmer.farmerName} 的聊天窗口...`);
+                      // 实际项目中这里可以打开IM窗口或跳转到聊天页面
+                      // navigateToSubRoute("chat", `farmer/${contactFarmerId}`);
+                    }
+                    setContactFarmerId(null);
+                  }}
+                >
+                  <MessageSquare className="w-4 h-4 mr-2" />
+                  即时聊天
+                </Button>
+                <Button
+                  variant="outline"
+                  className="w-full"
+                  onClick={() => {
+                    const farmer = quotes.find((q) => q.farmerId === contactFarmerId);
+                    if (farmer && farmer.phone) {
+                      window.location.href = `tel:${farmer.phone}`;
+                    } else {
+                      toast.info("该农户未提供联系电话");
+                    }
+                    setContactFarmerId(null);
+                  }}
+                >
+                  拨打电话
+                </Button>
+              </div>
+            </div>
+            <DialogFooter>
+              <Button variant="outline" onClick={() => setContactFarmerId(null)}>
+                关闭
+              </Button>
+            </DialogFooter>
+          </DialogContent>
+        </Dialog>
       </div>
     </div>
   );

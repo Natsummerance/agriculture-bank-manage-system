@@ -18,7 +18,16 @@ const stats = [
 
 export function FarmerHome() {
   const handlePublishProduct = () => {
-    toast.success("发布商品功能开发中...");
+    // 跳转到商品发布页面
+    const event = new CustomEvent('navigate-tab', { detail: { tab: 'trade' } });
+    window.dispatchEvent(event);
+    // 延迟一下再跳转到发布页面，确保tab已切换
+    setTimeout(() => {
+      const subRouteEvent = new CustomEvent('navigate-sub-route', {
+        detail: { tab: 'trade', subRoute: 'publish' }
+      });
+      window.dispatchEvent(subRouteEvent);
+    }, 100);
   };
 
   const handleApplyFinance = () => {

@@ -26,8 +26,42 @@ export default function FarmerReportPanel() {
   );
 
   const handleExport = () => {
-    toast.success("正在生成 Excel 报表...");
-    // TODO: 调用Excel导出服务
+    try {
+      toast.success("正在生成 Excel 报表...");
+      // 创建CSV格式的报表（Excel可以打开CSV）
+      const headers = ['订单号', '买家', '金额', '状态', '创建时间'];
+      const csvRows = [headers.join(',')];
+      
+      orders.forEach((order) => {
+        const row = [
+          order.id,
+          order.buyerName,
+          order.totalAmount.toFixed(2),
+          order.status,
+          new Date(order.createdAt).toLocaleString(),
+        ].map((cell) => `"${cell}"`).join(',');
+        csvRows.push(row);
+      });
+
+      // 添加汇总信息
+      csvRows.push('');
+      csvRows.push('汇总信息');
+      csvRows.push(`总订单数,${orders.length}`);
+      csvRows.push(`总金额,${totalAmount.toFixed(2)}`);
+      csvRows.push(`平均订单金额,${(totalAmount / orders.length || 0).toFixed(2)}`);
+
+      const csvContent = csvRows.join('\n');
+      const blob = new Blob(['\ufeff' + csvContent], { type: 'text/csv;charset=utf-8;' });
+      const url = URL.createObjectURL(blob);
+      const link = document.createElement('a');
+      link.href = url;
+      link.download = `收入报表_${new Date().toISOString().split('T')[0]}.csv`;
+      link.click();
+      URL.revokeObjectURL(url);
+      toast.success("Excel 报表已导出");
+    } catch (error: any) {
+      toast.error("导出失败，请稍后重试");
+    }
   };
 
   return (

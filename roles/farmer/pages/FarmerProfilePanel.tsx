@@ -233,8 +233,12 @@ export default function FarmerProfilePanel() {
               <button
                 key={tab.id}
                 onClick={() => {
-                  setActiveSubTab(tab.id as any);
-                  navigateToSubRoute("profile", tab.route);
+                  // 如果点击的是已移动到独立页面的tab，直接导航
+                  if (["wallet", "report", "notifications", "settings"].includes(tab.route)) {
+                    navigateToSubRoute("profile", tab.route);
+                  } else {
+                    setActiveSubTab(tab.id as any);
+                  }
                 }}
                 className={`px-4 py-2 text-sm font-medium transition-colors relative ${
                   isActive ? "text-[#00D6C2]" : "text-white/60 hover:text-white/80"
@@ -252,33 +256,7 @@ export default function FarmerProfilePanel() {
           })}
         </motion.div>
 
-        {/* 钱包页面 - 已移动到独立页面，这里显示占位 */}
-        {activeSubTab === "wallet" && (
-          <div className="text-center py-12">
-            <p className="text-white/60">正在跳转到钱包中心...</p>
-          </div>
-        )}
-
-        {/* 报表页面 - 已移动到独立页面 */}
-        {activeSubTab === "report" && (
-          <div className="text-center py-12">
-            <p className="text-white/60">正在跳转到收入报表...</p>
-          </div>
-        )}
-
-        {/* 通知页面 - 已移动到独立页面 */}
-        {activeSubTab === "notifications" && (
-          <div className="text-center py-12">
-            <p className="text-white/60">正在跳转到通知中心...</p>
-          </div>
-        )}
-
-        {/* 设置页面 - 已移动到独立页面 */}
-        {activeSubTab === "settings" && (
-          <div className="text-center py-12">
-            <p className="text-white/60">正在跳转到系统设置...</p>
-          </div>
-        )}
+        {/* 钱包、报表、通知、设置页面已移动到独立页面，通过navigateToSubRoute自动跳转 */}
 
         {/* 钱包页面 - 旧版本保留 */}
         {false && activeSubTab === "wallet" && (

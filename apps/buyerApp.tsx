@@ -20,6 +20,11 @@ import BuyerRefundProgress from "../roles/buyer/pages/RefundProgress";
 import BuyerProductReview from "../roles/buyer/pages/ProductReview";
 import BuyerAddressManage from "../roles/buyer/pages/AddressManage";
 import BuyerCouponInvite from "../roles/buyer/pages/CouponInvite";
+import BuyerOrderDetail from "../roles/buyer/pages/OrderDetail";
+// Profile 子页面
+import BuyerProfileEdit from "../roles/buyer/pages/ProfileEdit";
+import BuyerNotificationCenter from "../roles/buyer/pages/NotificationCenter";
+import BuyerBankCardManage from "../roles/buyer/pages/BankCardManage";
 import { navigateToSubRoute } from "../utils/subRouteNavigation";
 
 type BuyerAppProps = {
@@ -85,6 +90,10 @@ export default function BuyerApp({ initialTab = "home", initialSubRoute }: Buyer
     const [route, params] = subRoute.split("?");
     switch (route) {
       case "products":
+      case "list":
+        return <BuyerProductList />;
+      case "publish":
+        // 买家不需要发布商品，跳转到商品列表
         return <BuyerProductList />;
       case "product/detail":
         return <BuyerProductDetail />;
@@ -92,6 +101,11 @@ export default function BuyerApp({ initialTab = "home", initialSubRoute }: Buyer
         return <BuyerProductCompare />;
       case "product/review":
         return <BuyerProductReview />;
+      case "orders":
+        return <BuyerOrders />;
+      case "order/detail":
+      case "order-detail":
+        return <BuyerOrderDetail />;
       case "order/refund-progress":
         return <BuyerRefundProgress />;
       case "demand/create":
@@ -110,10 +124,18 @@ export default function BuyerApp({ initialTab = "home", initialSubRoute }: Buyer
   const renderProfileSubRoute = (subRoute: string) => {
     const [route] = subRoute.split("?");
     switch (route) {
+      case "overview":
+        return <BuyerProfilePanel />;
+      case "edit":
+        return <BuyerProfileEdit />;
       case "address":
         return <BuyerAddressManage />;
       case "invite":
         return <BuyerCouponInvite />;
+      case "notifications":
+        return <BuyerNotificationCenter />;
+      case "bank-card":
+        return <BuyerBankCardManage />;
       default:
         return <BuyerProfilePanel />;
     }

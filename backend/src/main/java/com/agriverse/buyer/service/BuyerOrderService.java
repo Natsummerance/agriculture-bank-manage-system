@@ -32,6 +32,9 @@ public class BuyerOrderService {
 
     @Autowired
     private FarmerProductRepository farmerProductRepository;
+    
+    @Autowired
+    private com.agriverse.order.repository.RefundHistoryRepository refundHistoryRepository;
 
     /**
      * 创建订单
@@ -313,5 +316,78 @@ public class BuyerOrderService {
             default:
                 return status.name().toLowerCase();
         }
+    }
+    
+    /**
+     * 申请退款
+     */
+    public void applyRefund(String buyerId, String orderId, String reason) {
+        log.info("申请退款: buyerId={}, orderId={}, reason={}", buyerId, orderId, reason);
+        
+        BuyerOrder order = buyerOrderRepository.findByIdAndBuyerId(orderId, buyerId)
+            .orElseThrow(() -> new RuntimeException("订单不存在或无权访问"));
+        
+        // 检查订单状态是否可以申请退款
+        if (order.getStatus() != BuyerOrder.OrderStatus.PAID &&
+            order.getStatus() != BuyerOrder.OrderStatus.SHIPPED &&
+            order.getStatus() != BuyerOrder.OrderStatus.COMPLETED) {
+            throw new RuntimeException("订单状态不允许申请退款");
+        }
+        
+        // 检查是否已有退款申请
+        if (order.getRefundStatus() != null && 
+            order.getRefundStatus() != BuyerOrder.RefundStatus.REJECTED &&
+            order.getRefundStatus() != BuyerOrder.RefundStatus.FAILED) {
+            throw new RuntimeException("该订单已有退款申请");
+        }
+        
+        // 更新订单退款状态
+        order.setRefundStatus(BuyerOrder.RefundStatus.PENDING);
+        order.setRefundReason(reason);
+        order.setStatus(BuyerOrder.OrderStatus.REFUNDING);
+        order.setUpdatedAt(LocalDateTime.now());
+        buyerOrderRepository.save(order);
+        
+        // 创建退款历史记录
+        com.agriverse.entity.RefundHistory refundHistory = com.agriverse.entity.RefundHistory.builder()
+            .orderId(orderId)
+            .action("申请退款")
+            .actor(com.agriverse.entity.RefundHistory.ActorType.BUYER)
+            .note(reason)
+            .build();
+        refundHistoryRepository.save(refundHistory);
+        
+        log.info("退款申请已提交: orderId={}", orderId);
+    }
+    
+    /**
+     * 获取退款详情
+     */
+    @Transactional(readOnly = true)
+    public Object getRefundDetail(String buyerId, String orderId) {
+        log.info("获取退款详情: buyerId={}, orderId={}", buyerId, orderId);
+        
+        BuyerOrder order = buyerOrderRepository.findByIdAndBuyerId(orderId, buyerId)
+            .orElseThrow(() -> new RuntimeException("订单不存在或无权访问"));
+        
+        // 获取退款历史记录
+        List<com.agriverse.entity.RefundHistory> history = refundHistoryRepository.findByOrderIdOrderByCreatedAtDesc(orderId);
+        
+        // 构建退款详情响应
+        java.util.Map<String, Object> refundDetail = new java.util.HashMap<>();
+        refundDetail.put("orderId", orderId);
+        refundDetail.put("refundStatus", order.getRefundStatus() != null ? convertRefundStatusToString(order.getRefundStatus()) : null);
+        refundDetail.put("refundReason", order.getRefundReason());
+        refundDetail.put("totalAmount", order.getTotalAmount());
+        refundDetail.put("history", history.stream().map(h -> {
+            java.util.Map<String, Object> item = new java.util.HashMap<>();
+            item.put("action", h.getAction());
+            item.put("actor", h.getActor().name().toLowerCase());
+            item.put("note", h.getNote());
+            item.put("createdAt", h.getCreatedAt());
+            return item;
+        }).collect(Collectors.toList()));
+        
+        return refundDetail;
     }
 }

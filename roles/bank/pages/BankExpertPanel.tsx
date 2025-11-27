@@ -203,8 +203,13 @@ export default function BankExpertPanel() {
                     variant="outline"
                     className="flex-1"
                     onClick={() => {
-                      toast.success(`正在联系客户 ${client.name}...`);
-                      // TODO: 打开IM窗口或拨打电话
+                      if (client.phone) {
+                        window.location.href = `tel:${client.phone}`;
+                      } else {
+                        toast.success(`正在打开与 ${client.name} 的聊天窗口...`);
+                        // 实际项目中这里可以打开IM窗口
+                        // navigateToSubRoute("chat", `client/${client.id}`);
+                      }
                     }}
                   >
                     联系客户

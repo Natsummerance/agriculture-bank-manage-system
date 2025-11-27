@@ -126,9 +126,9 @@ export default function BuyerDemandPage({ onClose }: BuyerDemandPageProps = {}) 
     formData.deliveryAddress;
 
   return (
-    <div className="min-h-screen bg-[#0A0A0D] pb-24">
+    <div className="min-h-screen bg-[#050816] pb-24">
       {/* Header */}
-      <div className="sticky top-0 z-10 bg-[#0A0A0D]/80 backdrop-blur-xl border-b border-white/5">
+      <div className="sticky top-0 z-10 bg-[#0A0F1E]/80 backdrop-blur-xl border-b border-white/5">
         <div className="max-w-4xl mx-auto px-6 py-4">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-3">
@@ -215,7 +215,7 @@ export default function BuyerDemandPage({ onClose }: BuyerDemandPageProps = {}) 
               <motion.div
                 initial={{ opacity: 0, y: -10 }}
                 animate={{ opacity: 1, y: 0 }}
-                className="absolute top-full left-0 right-0 mt-2 bg-[#0A0A0D] border border-white/10 rounded-xl overflow-hidden shadow-2xl z-20"
+                className="absolute top-full left-0 right-0 mt-2 bg-[#0A0F1E]/95 backdrop-blur-xl border border-white/10 rounded-xl overflow-hidden shadow-2xl shadow-[#00D6C2]/10 z-20"
               >
                 {productSuggestions
                   .filter(s => s.toLowerCase().includes(formData.productName.toLowerCase()))
@@ -298,7 +298,7 @@ export default function BuyerDemandPage({ onClose }: BuyerDemandPageProps = {}) 
                 )}
               </Button>
             </PopoverTrigger>
-            <PopoverContent className="w-auto p-0 bg-[#0A0A0D] border-white/10">
+            <PopoverContent className="w-auto p-0 bg-[#0A0F1E]/95 backdrop-blur-xl border-white/10">
               <CalendarComponent
                 mode="single"
                 selected={formData.deliveryDate}

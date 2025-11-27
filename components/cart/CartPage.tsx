@@ -130,7 +130,7 @@ export default function CartPage({ onNavigate }: CartPageProps = {}) {
 
   if (items.length === 0) {
     return (
-      <div className="min-h-screen bg-[#0A0A0D] flex items-center justify-center p-6">
+      <div className="min-h-screen bg-[#050816] flex items-center justify-center p-6">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
@@ -159,9 +159,9 @@ export default function CartPage({ onNavigate }: CartPageProps = {}) {
   }
 
   return (
-    <div className="min-h-screen bg-[#0A0A0D] pb-32">
+    <div className="min-h-screen bg-[#050816] pb-32">
       {/* Header */}
-      <div className="sticky top-0 z-10 bg-[#0A0A0D]/80 backdrop-blur-xl border-b border-white/5">
+      <div className="sticky top-0 z-10 bg-[#0A0F1E]/80 backdrop-blur-xl border-b border-white/5">
         <div className="max-w-6xl mx-auto px-6 py-4">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-4">
@@ -269,7 +269,7 @@ export default function CartPage({ onNavigate }: CartPageProps = {}) {
       <motion.div
         initial={{ y: 100 }}
         animate={{ y: 0 }}
-        className="fixed bottom-0 left-0 right-0 bg-[#0A0A0D]/95 backdrop-blur-xl border-t border-white/10 pb-safe"
+        className="fixed bottom-0 left-0 right-0 bg-[#0A0F1E]/95 backdrop-blur-xl border-t border-white/10 pb-safe"
       >
         <div className="max-w-6xl mx-auto px-6 py-4">
           <div className="flex items-center justify-between gap-4">
@@ -311,7 +311,7 @@ export default function CartPage({ onNavigate }: CartPageProps = {}) {
 
       {/* Delete Confirmation Dialog */}
       <AlertDialog open={!!deleteId} onOpenChange={() => setDeleteId(null)}>
-        <AlertDialogContent className="bg-[#0A0A0D] border border-white/10">
+        <AlertDialogContent className="bg-[#0A0F1E]/95 backdrop-blur-xl border border-white/10 shadow-2xl shadow-[#00D6C2]/10">
           <AlertDialogHeader>
             <AlertDialogTitle className="text-white">确认删除</AlertDialogTitle>
             <AlertDialogDescription className="text-white/60">

@@ -19,6 +19,10 @@ import BankReconciliation from "../roles/bank/pages/BankReconciliation";
 import BankContractGenerate from "../roles/bank/pages/ContractGenerate";
 import BankOverdueAlert from "../roles/bank/pages/OverdueAlert";
 import BankApplicationDownload from "../roles/bank/pages/ApplicationDownload";
+// Profile 子页面
+import BankProfileEdit from "../roles/bank/pages/ProfileEdit";
+import BankNotificationCenter from "../roles/bank/pages/NotificationCenter";
+import BankBankCardManage from "../roles/bank/pages/BankCardManage";
 
 type BankAppProps = {
   initialTab?: string;
@@ -72,8 +76,26 @@ export default function BankApp({ initialTab = "home", initialSubRoute }: BankAp
     switch (tab) {
       case "finance":
         return renderFinanceSubRoute(subRoute);
+      case "profile":
+        return renderProfileSubRoute(subRoute);
       default:
         return null;
+    }
+  };
+
+  const renderProfileSubRoute = (subRoute: string) => {
+    const [route] = subRoute.split("?");
+    switch (route) {
+      case "overview":
+        return <BankProfilePanel />;
+      case "edit":
+        return <BankProfileEdit />;
+      case "notifications":
+        return <BankNotificationCenter />;
+      case "bank-card":
+        return <BankBankCardManage />;
+      default:
+        return <BankProfilePanel />;
     }
   };
 

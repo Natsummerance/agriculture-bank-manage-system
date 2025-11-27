@@ -42,6 +42,9 @@ import FarmerKnowledgeFavorite from "../roles/farmer/pages/KnowledgeFavorite";
 import FarmerQuestionAsk from "../roles/farmer/pages/QuestionAsk";
 import FarmerAppointmentBook from "../roles/farmer/pages/AppointmentBook";
 
+//观看直播
+import ExpertLiveStreamPage from "../roles/expert/pages/ExpertLiveStreamPage"; 
+
 type FarmerAppProps = {
   initialTab?: string;
   initialSubRoute?: string;
@@ -163,6 +166,9 @@ export default function FarmerApp({ initialTab = "home", initialSubRoute }: Farm
     switch (route) {
       case "products":
         return <FarmerProductList />;
+      case "publish":
+        // 发布商品使用ProductList中的Dialog，这里直接返回列表页
+        return <FarmerProductList />;
       case "dashboard":
         return <FarmerProductDashboard />;
       case "orders":
@@ -208,8 +214,10 @@ export default function FarmerApp({ initialTab = "home", initialSubRoute }: Farm
     }
   };
 
-  const renderExpertSubRoute = (subRoute: string) => {
-    const [route] = subRoute.split("?");
+ const renderExpertSubRoute = (subRoute: string) => {
+    // ⚡ 关键修改：需要分割出 params，因为 live/join 会带参数
+    const [route, params] = subRoute.split("?"); 
+    
     switch (route) {
       case "overview":
         return <FarmerExpertPanel />;
@@ -219,11 +227,15 @@ export default function FarmerApp({ initialTab = "home", initialSubRoute }: Farm
         return <FarmerAppointmentBook />;
       case "knowledge/favorite":
         return <FarmerKnowledgeFavorite />;
+        
+      // ⚡ 新增的逻辑：如果路由是 live/join，则渲染 ExpertLiveStreamPage (农户观看模式)
+      case "live/join":
+        return <ExpertLiveStreamPage mode="join" params={params} />;
+        
       default:
         return <FarmerExpertPanel />;
     }
   };
-
   return (
     <div className="min-h-screen bg-[#050816] text-white">
       <Navigation activeTab={activeTab} onTabChange={setActiveTab} />

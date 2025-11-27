@@ -27,8 +27,53 @@ export default function FarmerOrderPrintLabels() {
       toast.error("请至少选择一个订单");
       return;
     }
-    toast.success(`正在生成 ${selectedOrders.size} 个订单的电子面单...`);
-    // TODO: 调用PDF生成服务
+    
+    try {
+      const selectedOrdersList = shippedOrders.filter((o) => selectedOrders.has(o.id));
+      const printContent = selectedOrdersList.map((order) => `
+        ====================================
+        电子面单
+        ====================================
+        订单号：${order.id}
+        买家：${order.buyerName}
+        快递公司：${order.logisticsCompany}
+        运单号：${order.trackingNumber}
+        金额：¥${order.totalAmount.toLocaleString()}
+        打印时间：${new Date().toLocaleString()}
+        ====================================
+      `).join('\n\n');
+      
+      const printWindow = window.open('', '_blank');
+      if (printWindow) {
+        printWindow.document.write(`
+          <!DOCTYPE html>
+          <html>
+          <head>
+            <meta charset="UTF-8">
+            <title>电子面单打印</title>
+            <style>
+              body { font-family: monospace; padding: 20px; }
+              pre { white-space: pre-wrap; }
+            </style>
+          </head>
+          <body>
+            <pre>${printContent}</pre>
+            <script>
+              window.onload = function() {
+                window.print();
+              };
+            </script>
+          </body>
+          </html>
+        `);
+        printWindow.document.close();
+        toast.success(`正在打印 ${selectedOrders.size} 个订单的电子面单...`);
+      } else {
+        toast.error("无法打开打印窗口，请检查浏览器弹窗设置");
+      }
+    } catch (error: any) {
+      toast.error("打印失败，请稍后重试");
+    }
   };
 
   const handleBatchDownload = () => {
@@ -36,8 +81,33 @@ export default function FarmerOrderPrintLabels() {
       toast.error("请至少选择一个订单");
       return;
     }
-    toast.success(`正在下载 ${selectedOrders.size} 个订单的电子面单PDF...`);
-    // TODO: 调用批量PDF下载服务
+    
+    try {
+      const selectedOrdersList = shippedOrders.filter((o) => selectedOrders.has(o.id));
+      const content = selectedOrdersList.map((order) => `
+====================================
+电子面单
+====================================
+订单号：${order.id}
+买家：${order.buyerName}
+快递公司：${order.logisticsCompany}
+运单号：${order.trackingNumber}
+金额：¥${order.totalAmount.toLocaleString()}
+生成时间：${new Date().toLocaleString()}
+====================================
+      `).join('\n\n');
+      
+      const blob = new Blob([content], { type: 'text/plain' });
+      const url = URL.createObjectURL(blob);
+      const link = document.createElement('a');
+      link.href = url;
+      link.download = `电子面单_${new Date().toISOString().split('T')[0]}.txt`;
+      link.click();
+      URL.revokeObjectURL(url);
+      toast.success(`已下载 ${selectedOrders.size} 个订单的电子面单`);
+    } catch (error: any) {
+      toast.error("下载失败，请稍后重试");
+    }
   };
 
   return (

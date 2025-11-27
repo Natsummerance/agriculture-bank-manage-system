@@ -89,7 +89,7 @@ export function QuantumMatch() {
   }, [matched]);
 
   return (
-    <div className="fixed inset-0 z-50 bg-[#0A0A0D]">
+    <div className="fixed inset-0 z-50 bg-[#050816]">
       <canvas ref={canvasRef} className="absolute inset-0" />
 
       <div className="relative z-10 flex flex-col items-center justify-center min-h-screen p-8">

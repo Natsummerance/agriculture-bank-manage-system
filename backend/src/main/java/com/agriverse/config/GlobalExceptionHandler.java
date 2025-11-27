@@ -1,6 +1,8 @@
 package com.agriverse.config;
 
 import com.agriverse.dto.ApiResponse;
+import com.agriverse.exception.BusinessException;
+import jakarta.persistence.EntityNotFoundException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -66,6 +68,27 @@ public class GlobalExceptionHandler {
 
         return ResponseEntity.status(HttpStatus.BAD_REQUEST)
                 .body(ApiResponse.error(400, message));
+    }
+
+    /**
+     * 处理业务异常
+     */
+    @ExceptionHandler(BusinessException.class)
+    public ResponseEntity<ApiResponse<Object>> handleBusinessException(BusinessException ex) {
+        log.warn("业务异常: {}", ex.getMessage());
+        Integer code = ex.getCode() != null && ex.getCode().equals("APPLY_JOINT_LOAN") ? 2001 : 400;
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                .body(ApiResponse.error(code, ex.getMessage()));
+    }
+
+    /**
+     * 处理实体不存在异常
+     */
+    @ExceptionHandler(EntityNotFoundException.class)
+    public ResponseEntity<ApiResponse<Object>> handleEntityNotFoundException(EntityNotFoundException ex) {
+        log.warn("实体不存在: {}", ex.getMessage());
+        return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                .body(ApiResponse.error(404, ex.getMessage()));
     }
 
     /**

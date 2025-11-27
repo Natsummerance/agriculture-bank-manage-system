@@ -30,7 +30,7 @@ export function PreviewDrawer({ isOpen, onClose, draft }: PreviewDrawerProps) {
             animate={{ x: 0 }}
             exit={{ x: '100%' }}
             transition={{ type: 'spring', damping: 25 }}
-            className="fixed right-0 top-0 h-full w-full max-w-2xl bg-[#0A0A0D] border-l border-white/10 z-[90] flex flex-col"
+            className="fixed right-0 top-0 h-full w-full max-w-2xl bg-[#0A0F1E]/95 backdrop-blur-xl border-l border-white/10 shadow-2xl shadow-[#00D6C2]/20 z-[90] flex flex-col"
           >
             {/* 头部 */}
             <div className="p-6 border-b border-white/10 flex-shrink-0">

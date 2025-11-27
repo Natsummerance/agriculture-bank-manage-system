@@ -18,6 +18,9 @@ import AdminSystemConfig from "../roles/admin/pages/SystemConfig";
 import AdminBannerManage from "../roles/admin/pages/BannerManage";
 import AdminCouponIssue from "../roles/admin/pages/CouponIssue";
 import AdminGrayRelease from "../roles/admin/pages/GrayRelease";
+// Profile 子页面
+import AdminProfileEdit from "../roles/admin/pages/ProfileEdit";
+import AdminNotificationCenter from "../roles/admin/pages/NotificationCenter";
 
 type AdminAppProps = {
   initialTab?: string;
@@ -107,12 +110,18 @@ export default function AdminApp({ initialTab = "home", initialSubRoute }: Admin
   const renderProfileSubRoute = (subRoute: string) => {
     const [route] = subRoute.split("?");
     switch (route) {
+      case "overview":
+        return <AdminProfilePanel />;
+      case "edit":
+        return <AdminProfileEdit />;
       case "permission":
         return <AdminPermissionManage />;
       case "log":
         return <AdminOperationLog />;
       case "config":
         return <AdminSystemConfig />;
+      case "notifications":
+        return <AdminNotificationCenter />;
       default:
         return <AdminProfilePanel />;
     }

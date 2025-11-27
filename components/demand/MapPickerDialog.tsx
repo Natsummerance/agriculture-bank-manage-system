@@ -59,7 +59,7 @@ export function MapPickerDialog({ isOpen, onClose, onConfirm }: MapPickerDialogP
             exit={{ y: '100%' }}
             transition={{ type: 'spring', damping: 25 }}
             onClick={(e) => e.stopPropagation()}
-            className="w-full h-[70vh] bg-[#0A0A0D] rounded-t-3xl border-t border-white/10 flex flex-col"
+            className="w-full h-[70vh] bg-[#0A0F1E]/95 backdrop-blur-xl rounded-t-3xl border-t border-white/10 shadow-2xl shadow-[#00D6C2]/10 flex flex-col"
           >
             {/* 头部 */}
             <div className="p-6 border-b border-white/10 flex-shrink-0">
@@ -151,7 +151,7 @@ export function MapPickerDialog({ isOpen, onClose, onConfirm }: MapPickerDialogP
                 <motion.div
                   initial={{ opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}
-                  className="absolute bottom-0 left-0 right-0 max-h-64 overflow-y-auto bg-[#0A0A0D]/95 backdrop-blur-xl border-t border-white/10"
+                  className="absolute bottom-0 left-0 right-0 max-h-64 overflow-y-auto bg-[#0A0F1E]/95 backdrop-blur-xl border-t border-white/10"
                 >
                   {searchResults.map((location, index) => (
                     <motion.button

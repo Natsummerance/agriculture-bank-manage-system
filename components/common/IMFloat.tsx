@@ -99,10 +99,10 @@ export default function IMFloat({
             <motion.div
               initial={{ opacity: 0, x: 10 }}
               animate={{ opacity: 1, x: 0 }}
-              className="absolute right-full mr-3 top-1/2 -translate-y-1/2 bg-[#0A0A0D] border border-white/10 rounded-lg px-3 py-2 whitespace-nowrap text-sm text-white shadow-lg"
+              className="absolute right-full mr-3 top-1/2 -translate-y-1/2 bg-[#0A0F1E]/95 backdrop-blur-xl border border-white/10 rounded-lg px-3 py-2 whitespace-nowrap text-sm text-white shadow-lg shadow-[#00D6C2]/10"
             >
               在线客服
-              <div className="absolute right-0 top-1/2 -translate-y-1/2 translate-x-full w-0 h-0 border-4 border-transparent border-l-[#0A0A0D]" />
+              <div className="absolute right-0 top-1/2 -translate-y-1/2 translate-x-full w-0 h-0 border-4 border-transparent border-l-[#0A0F1E]" />
             </motion.div>
           </motion.div>
         )}
@@ -127,7 +127,7 @@ export default function IMFloat({
             exit={{ y: 100, opacity: 0 }}
             className="fixed bottom-6 right-6 z-40"
           >
-            <div className="bg-[#0A0A0D] border border-white/10 rounded-2xl p-4 shadow-2xl flex items-center gap-3">
+            <div className="bg-[#0A0F1E]/95 backdrop-blur-xl border border-white/10 rounded-2xl p-4 shadow-2xl shadow-[#00D6C2]/10 flex items-center gap-3">
               <img
                 src={expertAvatar}
                 alt={expertName}

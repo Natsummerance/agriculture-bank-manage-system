@@ -55,6 +55,7 @@ import BankApp from '../apps/bankApp';
 import ExpertApp from '../apps/expertApp';
 import AdminApp from '../apps/adminApp';
 import NotFound from '../components/NotFound';
+import ExpertLiveStreamPage from '@/roles/expert/pages/ExpertLiveStreamPage';
 
 export const router = createBrowserRouter([
   {
@@ -173,6 +174,10 @@ export const router = createBrowserRouter([
       { path: 'calendar', element: <ExpertCalendarPage /> },
       { path: 'knowledge', element: <ExpertKnowledge /> },
       { path: 'income', element: <ExpertIncome /> },
+      {
+        path: "live", // 对应 LiveStreamButton.tsx 中调用的 "live"
+        element: <ExpertLiveStreamPage />, // 新增直播页面路由
+      },
     ],
   },
   {

@@ -65,7 +65,7 @@ export default function SharePopover({
         )}
       </PopoverTrigger>
       <PopoverContent 
-        className="w-72 bg-[#0A0A0D] border border-white/10 p-4"
+        className="w-72 bg-[#0A0F1E]/95 backdrop-blur-xl border border-white/10 shadow-2xl shadow-[#00D6C2]/10 p-4"
         align="end"
       >
         <div className="space-y-3">

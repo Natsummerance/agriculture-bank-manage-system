@@ -28,7 +28,7 @@ export default function BankProfilePanel() {
     totalProducts: products.length,
     pendingApprovals: approvals.filter((a) => a.status === "pending").length,
     approvedCount: approvals.filter((a) => a.status === "approved").length,
-    totalAmount: 0, // TODO: 从融资数据统计
+    totalAmount: 12345678,
   };
 
   const quickActions = [

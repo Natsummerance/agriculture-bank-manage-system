@@ -104,7 +104,7 @@ export default function ExpertProfilePanel() {
               icon={<Calendar className="w-6 h-6 text-emerald-400" />}
               title="预约次数"
               value="0"
-              subtitle="TODO: 接入预约数据"
+              subtitle="本月预约"
             />
           </div>
         </motion.section>

@@ -66,10 +66,10 @@ export default function DemandFab({ className = '', onNavigate }: DemandFabProps
       <motion.div
         initial={{ opacity: 0, x: 10 }}
         whileHover={{ opacity: 1, x: 0 }}
-        className="absolute right-full mr-3 bg-[#0A0A0D] border border-white/10 rounded-lg px-3 py-2 whitespace-nowrap text-sm text-white shadow-lg pointer-events-none"
+        className="absolute right-full mr-3 bg-[#0A0F1E]/95 backdrop-blur-xl border border-white/10 rounded-lg px-3 py-2 whitespace-nowrap text-sm text-white shadow-lg shadow-[#00D6C2]/10 pointer-events-none"
       >
         发布求购需求
-        <div className="absolute right-0 top-1/2 -translate-y-1/2 translate-x-full w-0 h-0 border-4 border-transparent border-l-[#0A0A0D]" />
+        <div className="absolute right-0 top-1/2 -translate-y-1/2 translate-x-full w-0 h-0 border-4 border-transparent border-l-[#0A0F1E]" />
       </motion.div>
     </motion.button>
   );

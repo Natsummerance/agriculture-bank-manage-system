@@ -1,12 +1,14 @@
 import { useState } from "react";
 import { motion } from "motion/react";
-import { DollarSign, MessageSquare, Calendar, Video, Save } from "lucide-react";
+import { DollarSign, MessageSquare, Calendar, Video, Save, ArrowLeft } from "lucide-react";
 import { Button } from "../../../components/ui/button";
 import { Input } from "../../../components/ui/input";
 import { Form, FormField, FormItem, FormLabel, FormControl, FormMessage } from "../../../components/ui/form";
 import { useZodForm } from "../../../hooks/useZodForm";
 import { z } from "zod";
 import { toast } from "sonner";
+import { navigateToSubRoute } from "../../../utils/subRouteNavigation";
+import { updateServicePrice } from "../../../api/expert";
 
 const priceSchema = z.object({
   qaPrice: z.coerce.number().min(0, "价格不能为负"),
@@ -23,9 +25,19 @@ export default function ExpertServicePrice() {
     },
   });
 
-  const handleSubmit = form.handleSubmit((values) => {
-    toast.success("服务价格已更新");
-    // TODO: 调用后端API保存价格
+  const handleSubmit = form.handleSubmit(async (values) => {
+    try {
+      await updateServicePrice({
+        qaPrice: values.qaPrice,
+        servicePrice: values.appointmentPrice, // 将预约价格作为主要服务价格
+      });
+      toast.success("服务价格已更新");
+      setTimeout(() => {
+        navigateToSubRoute("profile", "overview");
+      }, 1000);
+    } catch (error: any) {
+      toast.error(error.message || "保存失败，请稍后重试");
+    }
   });
 
   return (
@@ -45,6 +57,13 @@ export default function ExpertServicePrice() {
               设置你的服务收费标准
             </p>
           </div>
+          <Button
+            variant="outline"
+            onClick={() => navigateToSubRoute("profile", "overview")}
+          >
+            <ArrowLeft className="w-4 h-4 mr-2" />
+            返回
+          </Button>
         </motion.div>
 
         {/* 价格设置表单 */}

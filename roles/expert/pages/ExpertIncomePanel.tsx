@@ -48,8 +48,41 @@ export default function ExpertIncomePanel() {
   });
 
   const handleExport = () => {
-    toast.success("正在生成收入报表...");
-    // TODO: 调用Excel导出服务
+    try {
+      toast.success("正在生成收入报表...");
+      // 创建CSV格式的报表
+      const headers = ['收入类型', '金额', '时间'];
+      const csvRows = [headers.join(',')];
+      
+      // 添加问答收入
+      if (safeQaEarnings > 0) {
+        csvRows.push(`"问答收入","${safeQaEarnings.toFixed(2)}","累计"`);
+      }
+      
+      // 添加预约收入
+      if (safeAppointmentEarnings > 0) {
+        csvRows.push(`"预约收入","${safeAppointmentEarnings.toFixed(2)}","累计"`);
+      }
+      
+      // 添加汇总信息
+      csvRows.push('');
+      csvRows.push('汇总信息');
+      csvRows.push(`总收入,${totalEarnings.toFixed(2)}`);
+      csvRows.push(`累计提现,${safeTotalWithdrawn.toFixed(2)}`);
+      csvRows.push(`可提现余额,${Math.max(0, safeWithdrawableBalance).toFixed(2)}`);
+
+      const csvContent = csvRows.join('\n');
+      const blob = new Blob(['\ufeff' + csvContent], { type: 'text/csv;charset=utf-8;' });
+      const url = URL.createObjectURL(blob);
+      const link = document.createElement('a');
+      link.href = url;
+      link.download = `收入报表_${new Date().toISOString().split('T')[0]}.csv`;
+      link.click();
+      URL.revokeObjectURL(url);
+      toast.success("收入报表已导出");
+    } catch (error: any) {
+      toast.error("导出失败，请稍后重试");
+    }
   };
 
   return (

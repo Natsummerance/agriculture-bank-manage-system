@@ -73,7 +73,7 @@ export default function InvoiceDownload({ invoiceId, isOpen, onClose }: InvoiceD
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent className="bg-[#0A0A0D] border border-white/10 max-w-3xl max-h-[90vh] overflow-y-auto">
+      <DialogContent className="bg-[#0A0F1E]/95 backdrop-blur-xl border border-white/10 shadow-2xl shadow-[#00D6C2]/10 max-w-3xl max-h-[90vh] overflow-y-auto">
         <DialogHeader>
           <DialogTitle className="text-white flex items-center gap-2">
             <FileText className="w-5 h-5 text-[#00D6C2]" />

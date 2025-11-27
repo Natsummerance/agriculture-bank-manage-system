@@ -22,7 +22,16 @@ export function BankHome() {
   };
 
   const handlePublishProduct = () => {
-    toast.success("发布金融产品功能开发中...");
+    // 跳转到金融产品管理页面
+    const event = new CustomEvent('navigate-tab', { detail: { tab: 'finance' } });
+    window.dispatchEvent(event);
+    // 延迟一下再跳转到产品管理页面
+    setTimeout(() => {
+      const subRouteEvent = new CustomEvent('navigate-sub-route', {
+        detail: { tab: 'finance', subRoute: 'products' }
+      });
+      window.dispatchEvent(subRouteEvent);
+    }, 100);
   };
 
   const handleApprove = (id: number) => {

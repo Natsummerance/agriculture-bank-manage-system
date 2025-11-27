@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { motion } from "motion/react";
-import { FileText, Download, Calendar, CheckCircle2, AlertCircle } from "lucide-react";
+import { FileText, Download, Calendar, CheckCircle2, AlertCircle, ArrowLeft } from "lucide-react";
 import { useFinancingStore } from "../../../stores/financingStore";
 import { Button } from "../../../components/ui/button";
 import { DateRangePicker } from "../../../components/common/DateRangePicker";
@@ -17,14 +17,103 @@ export default function BankReconciliation() {
   const disbursedFinancings = list.filter((f) => f.status === "disbursed" || f.status === "repaying");
 
   const handleExport = () => {
-    toast.success("正在生成对账报表...");
-    // TODO: 调用Excel导出服务
-    // 生成T+1对账文件，包含：融资编号、放款日期、放款金额、已还本金、已还利息、待还本金、待还利息等
+    try {
+      toast.success("正在生成对账报表...");
+      const headers = ['融资编号', '农户', '放款日期', '放款金额', '已还本金', '已还利息', '待还本金', '待还利息', '状态'];
+      const csvRows = [headers.join(',')];
+      
+      disbursedFinancings.forEach((financing) => {
+        const repaid = financing.repaymentSchedule?.filter((i) => i.status === "paid").reduce(
+          (sum, i) => ({ principal: sum.principal + i.principal, interest: sum.interest + i.interest }),
+          { principal: 0, interest: 0 }
+        ) || { principal: 0, interest: 0 };
+        
+        const total = financing.repaymentSchedule?.reduce(
+          (sum, i) => ({ principal: sum.principal + i.principal, interest: sum.interest + i.interest }),
+          { principal: 0, interest: 0 }
+        ) || { principal: 0, interest: 0 };
+        
+        const pending = {
+          principal: total.principal - repaid.principal,
+          interest: total.interest - repaid.interest,
+        };
+        
+        const row = [
+          financing.id,
+          financing.farmerName || '未知',
+          financing.timeline?.find((t) => t.status === "disbursed")?.timestamp || '',
+          financing.amount.toFixed(2),
+          repaid.principal.toFixed(2),
+          repaid.interest.toFixed(2),
+          pending.principal.toFixed(2),
+          pending.interest.toFixed(2),
+          financing.status,
+        ].map((cell) => `"${cell}"`).join(',');
+        csvRows.push(row);
+      });
+
+      // 添加汇总信息
+      csvRows.push('');
+      csvRows.push('汇总信息');
+      csvRows.push(`总放款金额,${totalDisbursed.toFixed(2)}`);
+      csvRows.push(`总已还金额,${totalRepaid.toFixed(2)}`);
+
+      const csvContent = csvRows.join('\n');
+      const blob = new Blob(['\ufeff' + csvContent], { type: 'text/csv;charset=utf-8;' });
+      const url = URL.createObjectURL(blob);
+      const link = document.createElement('a');
+      link.href = url;
+      link.download = `对账报表_${new Date().toISOString().split('T')[0]}.csv`;
+      link.click();
+      URL.revokeObjectURL(url);
+      toast.success("对账报表已导出");
+    } catch (error: any) {
+      toast.error("导出失败，请稍后重试");
+    }
   };
 
   const handleExportT1 = () => {
-    toast.success("正在生成T+1对账文件...");
-    // TODO: 生成T+1格式的对账文件，用于银行内部系统对接
+    try {
+      toast.success("正在生成T+1对账文件...");
+      // T+1格式：固定宽度文本文件，用于银行内部系统对接
+      const t1Rows: string[] = [];
+      
+      // 文件头
+      t1Rows.push('H' + new Date().toISOString().split('T')[0].replace(/-/g, '') + '001');
+      
+      // 数据行（固定宽度格式）
+      disbursedFinancings.forEach((financing) => {
+        const repaid = financing.repaymentSchedule?.filter((i) => i.status === "paid").reduce(
+          (sum, i) => ({ principal: sum.principal + i.principal, interest: sum.interest + i.interest }),
+          { principal: 0, interest: 0 }
+        ) || { principal: 0, interest: 0 };
+        
+        const row = [
+          'D', // 数据行标识
+          financing.id.padEnd(20), // 融资编号（20字符）
+          financing.amount.toFixed(2).padStart(15, '0'), // 放款金额（15字符，右对齐，补0）
+          repaid.principal.toFixed(2).padStart(15, '0'), // 已还本金
+          repaid.interest.toFixed(2).padStart(15, '0'), // 已还利息
+          financing.status.padEnd(10), // 状态（10字符）
+        ].join('');
+        t1Rows.push(row);
+      });
+      
+      // 文件尾
+      t1Rows.push('T' + disbursedFinancings.length.toString().padStart(10, '0'));
+
+      const content = t1Rows.join('\n');
+      const blob = new Blob([content], { type: 'text/plain' });
+      const url = URL.createObjectURL(blob);
+      const link = document.createElement('a');
+      link.href = url;
+      link.download = `T1对账文件_${new Date().toISOString().split('T')[0]}.txt`;
+      link.click();
+      URL.revokeObjectURL(url);
+      toast.success("T+1对账文件已生成");
+    } catch (error: any) {
+      toast.error("生成失败，请稍后重试");
+    }
   };
 
   const totalDisbursed = disbursedFinancings.reduce((sum, f) => sum + f.amount, 0);
@@ -53,6 +142,13 @@ export default function BankReconciliation() {
             </p>
           </div>
           <div className="flex gap-2">
+            <Button
+              variant="outline"
+              onClick={() => navigateToSubRoute("finance", "overview")}
+            >
+              <ArrowLeft className="w-4 h-4 mr-2" />
+              返回
+            </Button>
             <DateRangePicker value={dateRange} onChange={setDateRange} />
             <Button variant="outline" onClick={handleExport}>
               <Download className="w-4 h-4 mr-2" />

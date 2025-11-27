@@ -20,14 +20,46 @@ export default function BankApplicationDownload() {
   const { approvals } = useBankApprovalStore();
   const application = approvals.find((a) => a.id === applicationId);
 
-  const handleDownloadAll = () => {
-    toast.success("正在打包下载所有资料...");
-    // TODO: 调用后端API打包下载
+  const handleDownloadAll = async () => {
+    try {
+      toast.success("正在打包下载所有资料...");
+      // 模拟打包下载：创建一个包含所有文档信息的文本文件
+      const content = mockDocuments.map((doc) => 
+        `${doc.name} (${doc.type === 'image' ? '图片' : '文件'}) - ${doc.size} - ${doc.uploadedAt}`
+      ).join('\n');
+      
+      const blob = new Blob([content], { type: 'text/plain' });
+      const url = URL.createObjectURL(blob);
+      const link = document.createElement('a');
+      link.href = url;
+      link.download = `申请资料_${applicationId}_${new Date().toISOString().split('T')[0]}.txt`;
+      link.click();
+      URL.revokeObjectURL(url);
+      toast.success("资料包已下载");
+    } catch (error: any) {
+      toast.error("下载失败，请稍后重试");
+    }
   };
 
   const handleDownloadSingle = (docId: string) => {
-    toast.success(`正在下载 ${mockDocuments.find((d) => d.id === docId)?.name}`);
-    // TODO: 调用后端API下载单个文件
+    const doc = mockDocuments.find((d) => d.id === docId);
+    if (!doc) return;
+    
+    try {
+      toast.success(`正在下载 ${doc.name}...`);
+      // 模拟下载：创建一个占位文件
+      const content = `这是 ${doc.name} 的占位文件。\n实际项目中，这里应该从服务器下载真实文件。\n\n文件信息：\n- 类型：${doc.type === 'image' ? '图片' : '文件'}\n- 大小：${doc.size}\n- 上传时间：${doc.uploadedAt}`;
+      const blob = new Blob([content], { type: 'text/plain' });
+      const url = URL.createObjectURL(blob);
+      const link = document.createElement('a');
+      link.href = url;
+      link.download = doc.name + '.txt';
+      link.click();
+      URL.revokeObjectURL(url);
+      toast.success(`${doc.name} 已下载`);
+    } catch (error: any) {
+      toast.error("下载失败，请稍后重试");
+    }
   };
 
   return (

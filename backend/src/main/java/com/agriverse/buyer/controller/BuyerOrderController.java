@@ -159,6 +159,59 @@ public class BuyerOrderController {
     }
 
     /**
+     * 申请退款
+     * POST /api/buyer/orders/{orderId}/refund
+     */
+    @PostMapping("/{orderId}/refund")
+    @PreAuthorize("isAuthenticated()")
+    public ResponseEntity<ApiResponse<Object>> applyRefund(
+            Principal principal,
+            @PathVariable String orderId,
+            @RequestParam(required = false) String reason) {
+        try {
+            String buyerId = principal.getName();
+            log.info("申请退款请求: buyerId={}, orderId={}, reason={}", buyerId, orderId, reason);
+
+            buyerOrderService.applyRefund(buyerId, orderId, reason);
+            return ResponseEntity.ok(ApiResponse.success("退款申请已提交", null));
+        } catch (RuntimeException e) {
+            log.error("申请退款失败: {}", e.getMessage());
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                    .body(ApiResponse.error(400, e.getMessage()));
+        } catch (Exception e) {
+            log.error("申请退款异常", e);
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(ApiResponse.error(500, "申请退款失败，请稍后重试"));
+        }
+    }
+
+    /**
+     * 获取退款详情
+     * GET /api/buyer/orders/{orderId}/refund
+     */
+    @GetMapping("/{orderId}/refund")
+    @PreAuthorize("isAuthenticated()")
+    public ResponseEntity<ApiResponse<Object>> getRefundDetail(
+            Principal principal,
+            @PathVariable String orderId) {
+        try {
+            String buyerId = principal.getName();
+            log.info("获取退款详情请求: buyerId={}, orderId={}", buyerId, orderId);
+
+            Object refundDetail = buyerOrderService.getRefundDetail(buyerId, orderId);
+            return ResponseEntity.ok(ApiResponse.success("获取成功", refundDetail));
+        } catch (RuntimeException e) {
+            log.error("获取退款详情失败: {}", e.getMessage());
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                    .body(ApiResponse.error(400, e.getMessage()));
+        } catch (Exception e) {
+            log.error("获取退款详情异常", e);
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(ApiResponse.error(500, "获取退款详情失败，请稍后重试"));
+        }
+    }
+
+    /**
      * 健康检查
      * GET /api/buyer/orders/health
      */

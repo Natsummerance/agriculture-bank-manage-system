@@ -104,12 +104,12 @@ export default function PublishDemandPage({ onClose, onSuccess }: PublishDemandP
   })();
 
   return (
-    <div className="fixed inset-0 z-[70] bg-[#0A0A0D] overflow-hidden flex flex-col">
+    <div className="fixed inset-0 z-[70] bg-[#050816] overflow-hidden flex flex-col">
       {/* 顶部导航 - 64px */}
       <motion.header
         initial={{ y: -64, opacity: 0 }}
         animate={{ y: 0, opacity: 1 }}
-        className="h-16 flex-shrink-0 bg-[#0A0A0D]/80 backdrop-blur-xl border-b border-white/10"
+        className="h-16 flex-shrink-0 bg-[#0A0F1E]/80 backdrop-blur-xl border-b border-white/10"
       >
         <div className="h-full px-6 flex items-center justify-between">
           <div className="flex items-center gap-4">
@@ -197,7 +197,7 @@ export default function PublishDemandPage({ onClose, onSuccess }: PublishDemandP
       <motion.footer
         initial={{ y: 80, opacity: 0 }}
         animate={{ y: 0, opacity: 1 }}
-        className="h-20 flex-shrink-0 bg-[#0A0A0D]/80 backdrop-blur-xl border-t border-white/10"
+        className="h-20 flex-shrink-0 bg-[#0A0F1E]/80 backdrop-blur-xl border-t border-white/10"
       >
         <div className="h-full px-6 flex items-center gap-3">
           {/* 保存草稿 - 25% */}

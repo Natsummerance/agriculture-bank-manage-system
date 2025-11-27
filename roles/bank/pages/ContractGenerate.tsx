@@ -38,13 +38,104 @@ export default function BankContractGenerate() {
   };
 
   const handleDownload = () => {
-    toast.success("合同PDF下载中...");
-    // TODO: 调用PDF生成服务
+    try {
+      // 生成合同内容（HTML格式，可以转换为PDF）
+      const contractHTML = `
+        <!DOCTYPE html>
+        <html>
+        <head>
+          <meta charset="UTF-8">
+          <title>融资合同 - ${mockContract.id}</title>
+          <style>
+            body { font-family: SimSun, serif; padding: 40px; line-height: 1.8; }
+            h1 { text-align: center; }
+            .info { margin: 20px 0; }
+            .signature { margin-top: 60px; }
+          </style>
+        </head>
+        <body>
+          <h1>融资合同</h1>
+          <div class="info">
+            <p><strong>合同编号：</strong>${mockContract.id}</p>
+            <p><strong>借款人：</strong>${mockContract.farmerName}</p>
+            <p><strong>贷款金额：</strong>¥${mockContract.amount.toLocaleString()}</p>
+            <p><strong>贷款期限：</strong>${mockContract.term}个月</p>
+            <p><strong>年利率：</strong>${mockContract.rate}%</p>
+            <p><strong>资金用途：</strong>${mockContract.purpose}</p>
+          </div>
+          <div class="signature">
+            <p>借款人签字：_________________</p>
+            <p>银行签字：_________________</p>
+            <p>日期：${new Date().toLocaleDateString()}</p>
+          </div>
+        </body>
+        </html>
+      `;
+      
+      const blob = new Blob([contractHTML], { type: 'text/html' });
+      const url = URL.createObjectURL(blob);
+      const link = document.createElement('a');
+      link.href = url;
+      link.download = `合同_${mockContract.id}.html`;
+      link.click();
+      URL.revokeObjectURL(url);
+      toast.success("合同已下载");
+    } catch (error: any) {
+      toast.error("下载失败，请稍后重试");
+    }
   };
 
   const handlePreview = () => {
-    toast.success("打开合同预览");
-    // TODO: 打开合同预览窗口
+    // 打开新窗口预览合同
+    const contractHTML = `
+      <!DOCTYPE html>
+      <html>
+      <head>
+        <meta charset="UTF-8">
+        <title>合同预览 - ${mockContract.id}</title>
+        <style>
+          body { font-family: SimSun, serif; padding: 40px; line-height: 1.8; max-width: 800px; margin: 0 auto; }
+          h1 { text-align: center; }
+          .info { margin: 20px 0; }
+          .clauses { margin: 20px 0; }
+          .signature { margin-top: 60px; }
+        </style>
+      </head>
+      <body>
+        <h1>融资合同</h1>
+        <div class="info">
+          <p><strong>合同编号：</strong>${mockContract.id}</p>
+          <p><strong>借款人：</strong>${mockContract.farmerName}</p>
+          <p><strong>身份证号：</strong>${mockContract.farmerIdCard}</p>
+          <p><strong>贷款金额：</strong>¥${mockContract.amount.toLocaleString()}</p>
+          <p><strong>贷款期限：</strong>${mockContract.term}个月</p>
+          <p><strong>年利率：</strong>${mockContract.rate}%</p>
+          <p><strong>还款方式：</strong>${mockContract.repaymentMethod}</p>
+          <p><strong>资金用途：</strong>${mockContract.purpose}</p>
+          <p><strong>起始日期：</strong>${mockContract.startDate}</p>
+          <p><strong>到期日期：</strong>${mockContract.endDate}</p>
+        </div>
+        <div class="clauses">
+          <h2>合同条款</h2>
+          ${mockContract.clauses.map((clause) => `<p>${clause}</p>`).join('')}
+        </div>
+        <div class="signature">
+          <p>借款人签字：_________________</p>
+          <p>银行签字：_________________</p>
+          <p>日期：${new Date().toLocaleDateString()}</p>
+        </div>
+      </body>
+      </html>
+    `;
+    
+    const previewWindow = window.open('', '_blank');
+    if (previewWindow) {
+      previewWindow.document.write(contractHTML);
+      previewWindow.document.close();
+      toast.success("合同预览已打开");
+    } else {
+      toast.error("无法打开预览窗口，请检查浏览器弹窗设置");
+    }
   };
 
   return (

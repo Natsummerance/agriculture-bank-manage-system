@@ -210,12 +210,12 @@ export function JointLoanHub({ onClose }: JointLoanHubProps) {
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-md">
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm">
       <motion.div
         initial={{ scale: 0.9, opacity: 0 }}
         animate={{ scale: 1, opacity: 1 }}
         exit={{ scale: 0.9, opacity: 0 }}
-        className="w-full max-w-5xl h-[90vh] glass-morphism rounded-2xl border border-[#00D6C2]/30 flex flex-col overflow-hidden"
+        className="w-full max-w-5xl h-[90vh] bg-[#0A0F1E]/95 backdrop-blur-xl rounded-2xl border border-white/10 shadow-2xl shadow-[#00D6C2]/20 flex flex-col overflow-hidden"
       >
         {/* 头部 */}
         <div className="p-6 border-b border-white/10">
@@ -464,11 +464,12 @@ export function JointLoanHub({ onClose }: JointLoanHubProps) {
             onClick={() => setShowInviteModal(false)}
           >
             <motion.div
-              initial={{ scale: 0.9, y: 20 }}
-              animate={{ scale: 1, y: 0 }}
-              exit={{ scale: 0.9, y: 20 }}
+              initial={{ scale: 0.9, y: 20, rotate: -2 }}
+              animate={{ scale: 1, y: 0, rotate: 0 }}
+              exit={{ scale: 0.9, y: 20, rotate: 2 }}
+              transition={{ type: "spring", stiffness: 300, damping: 25 }}
               onClick={(e) => e.stopPropagation()}
-              className="w-full max-w-2xl glass-morphism rounded-2xl border border-[#00D6C2]/30 p-6"
+              className="w-full max-w-2xl max-h-[calc(100vh-4rem)] bg-[#0A0F1E]/95 backdrop-blur-xl rounded-2xl border border-white/10 shadow-2xl shadow-[#00D6C2]/20 p-6 overflow-y-auto"
             >
               <h3 className="mb-6">邀请参与银行</h3>
 

@@ -101,7 +101,7 @@ export function BasicInfoCard({ expanded, onToggle }: BasicInfoCardProps) {
                       <motion.div
                         initial={{ opacity: 0, y: -10 }}
                         animate={{ opacity: 1, y: 0 }}
-                        className="absolute top-full left-0 right-0 mt-2 bg-[#0A0A0D] border border-white/10 rounded-xl overflow-hidden shadow-2xl z-10"
+                        className="absolute top-full left-0 right-0 mt-2 bg-[#0A0F1E]/95 backdrop-blur-xl border border-white/10 rounded-xl overflow-hidden shadow-2xl shadow-[#00D6C2]/10 z-10"
                       >
                         {productSuggestions
                           .filter(s => s.toLowerCase().includes(draft.productName!.toLowerCase()))
@@ -139,7 +139,7 @@ export function BasicInfoCard({ expanded, onToggle }: BasicInfoCardProps) {
                         <ChevronDown className="w-4 h-4 text-white/40" />
                       </button>
                     </PopoverTrigger>
-                    <PopoverContent className="w-80 bg-[#0A0A0D] border-white/10 p-4">
+                    <PopoverContent className="w-80 bg-[#0A0F1E]/95 backdrop-blur-xl border-white/10 p-4">
                       <div className="space-y-3">
                         {Object.entries(categories).map(([parent, children]) => (
                           <div key={parent}>
@@ -261,7 +261,7 @@ export function BasicInfoCard({ expanded, onToggle }: BasicInfoCardProps) {
                         )}
                       </button>
                     </PopoverTrigger>
-                    <PopoverContent className="w-auto p-0 bg-[#0A0A0D] border-white/10">
+                    <PopoverContent className="w-auto p-0 bg-[#0A0F1E]/95 backdrop-blur-xl border-white/10">
                       <CalendarComponent
                         mode="single"
                         selected={draft.deliveryDate}

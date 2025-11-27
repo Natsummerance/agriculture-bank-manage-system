@@ -1,12 +1,13 @@
-import { useState } from "react";
+import { useState, useRef } from "react";
 import { motion } from "motion/react";
-import { Upload, FileText, CheckCircle2, XCircle, Shield, Award, GraduationCap } from "lucide-react";
+import { Upload, FileText, CheckCircle2, XCircle, Shield, Award, GraduationCap, ArrowLeft } from "lucide-react";
 import { Button } from "../../../components/ui/button";
 import { Input } from "../../../components/ui/input";
 import { Form, FormField, FormItem, FormLabel, FormControl, FormMessage } from "../../../components/ui/form";
 import { useZodForm } from "../../../hooks/useZodForm";
 import { z } from "zod";
 import { toast } from "sonner";
+import { navigateToSubRoute } from "../../../utils/subRouteNavigation";
 
 const qualificationSchema = z.object({
   name: z.string().min(1, "请输入姓名"),
@@ -49,9 +50,59 @@ export default function ExpertQualificationUpload() {
     },
   });
 
+  const fileInputRefs = useRef<Record<string, HTMLInputElement | null>>({});
+
   const handleFileUpload = (type: QualificationFile["type"]) => {
-    toast.success(`上传${type === "idCard" ? "身份证" : type === "certificate" ? "证书" : "学历证明"}`);
-    // TODO: 实现文件上传逻辑
+    const input = fileInputRefs.current[type];
+    if (input) {
+      input.click();
+    }
+  };
+
+  const handleFileChange = async (type: QualificationFile["type"], event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    if (!file) return;
+
+    // 验证文件大小（最大10MB）
+    if (file.size > 10 * 1024 * 1024) {
+      toast.error("文件大小不能超过10MB");
+      return;
+    }
+
+    // 验证文件类型
+    const allowedTypes = ['image/jpeg', 'image/png', 'image/jpg', 'application/pdf'];
+    if (!allowedTypes.includes(file.type)) {
+      toast.error("只支持 JPG、PNG 或 PDF 格式");
+      return;
+    }
+
+    try {
+      // 创建FormData
+      const formData = new FormData();
+      formData.append('file', file);
+      formData.append('type', type);
+
+      // 模拟上传（实际应该调用API）
+      toast.success(`正在上传${type === "idCard" ? "身份证" : type === "certificate" ? "证书" : type === "diploma" ? "学历证明" : "其他资料"}...`);
+      
+      // 模拟上传成功
+      setTimeout(() => {
+        const newFile: QualificationFile = {
+          id: Date.now().toString(),
+          name: file.name,
+          type,
+          url: URL.createObjectURL(file),
+          uploadedAt: new Date().toISOString().split('T')[0],
+        };
+        setFiles((prev) => {
+          const filtered = prev.filter((f) => f.type !== type);
+          return [...filtered, newFile];
+        });
+        toast.success(`${type === "idCard" ? "身份证" : type === "certificate" ? "证书" : type === "diploma" ? "学历证明" : "其他资料"}上传成功`);
+      }, 1000);
+    } catch (error: any) {
+      toast.error(error.message || "上传失败，请稍后重试");
+    }
   };
 
   const handleSubmit = form.handleSubmit((values) => {
@@ -83,6 +134,13 @@ export default function ExpertQualificationUpload() {
               上传专业资质证明，完成专家认证
             </p>
           </div>
+          <Button
+            variant="outline"
+            onClick={() => navigateToSubRoute("profile", "overview")}
+          >
+            <ArrowLeft className="w-4 h-4 mr-2" />
+            返回
+          </Button>
           {certificationStatus === "approved" && (
             <div className="text-sm px-3 py-1 rounded-full bg-emerald-400/20 text-emerald-400 flex items-center gap-2">
               <CheckCircle2 className="w-4 h-4" />
@@ -220,6 +278,13 @@ export default function ExpertQualificationUpload() {
                       )}
                     </div>
                   </div>
+                  <input
+                    type="file"
+                    ref={(el) => (fileInputRefs.current[type] = el)}
+                    onChange={(e) => handleFileChange(type, e)}
+                    accept="image/jpeg,image/png,image/jpg,application/pdf"
+                    className="hidden"
+                  />
                   {uploadedFile ? (
                     <div className="flex items-center justify-between">
                       <div className="flex items-center gap-2 text-sm text-emerald-400">

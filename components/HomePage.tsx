@@ -45,7 +45,19 @@ export function HomePage() {
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
               onClick={() => {
-                toast.info("AI语音播报功能开发中，敬请期待");
+                // 使用Web Speech API实现简单的语音播报
+                if ('speechSynthesis' in window) {
+                  const utterance = new SpeechSynthesisUtterance(
+                    newsData.slice(0, 3).map(n => n.title).join('。')
+                  );
+                  utterance.lang = 'zh-CN';
+                  utterance.rate = 0.9;
+                  utterance.pitch = 1;
+                  speechSynthesis.speak(utterance);
+                  toast.success("AI语音播报已开始");
+                } else {
+                  toast.info("您的浏览器不支持语音播报功能");
+                }
               }}
               className="flex items-center gap-2 px-4 py-2 rounded-lg text-sm text-[#00D6C2] hover:bg-[#00D6C2]/10 transition-colors"
             >

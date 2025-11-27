@@ -61,9 +61,37 @@ export default function AdminOperationLog() {
     return true;
   });
 
-  const handleExport = () => {
-    toast.success("正在导出操作日志...");
-    // TODO: 调用Excel导出服务
+  const handleExport = async () => {
+    try {
+      toast.success("正在导出操作日志...");
+      // 创建CSV数据
+      const headers = ['时间', '操作人', '操作类型', '操作内容', 'IP地址', '状态'];
+      const csvRows = [headers.join(',')];
+      
+      filteredLogs.forEach((log) => {
+        const row = [
+          log.timestamp,
+          log.operator,
+          log.action,
+          log.content,
+          log.ipAddress || '',
+          log.status,
+        ].map((cell) => `"${cell}"`).join(',');
+        csvRows.push(row);
+      });
+
+      const csvContent = csvRows.join('\n');
+      const blob = new Blob(['\ufeff' + csvContent], { type: 'text/csv;charset=utf-8;' });
+      const url = URL.createObjectURL(blob);
+      const link = document.createElement('a');
+      link.href = url;
+      link.download = `操作日志_${new Date().toISOString().split('T')[0]}.csv`;
+      link.click();
+      URL.revokeObjectURL(url);
+      toast.success("操作日志已导出");
+    } catch (error: any) {
+      toast.error("导出失败，请稍后重试");
+    }
   };
 
   return (

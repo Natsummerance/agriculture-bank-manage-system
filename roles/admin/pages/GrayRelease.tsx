@@ -183,14 +183,15 @@ export default function AdminGrayRelease() {
           <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
-            className="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center p-6"
+            className="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex items-center justify-center p-6"
             onClick={() => setOpen(false)}
           >
             <motion.div
-              initial={{ scale: 0.9, opacity: 0 }}
-              animate={{ scale: 1, opacity: 1 }}
+              initial={{ scale: 0.9, opacity: 0, rotate: -2 }}
+              animate={{ scale: 1, opacity: 1, rotate: 0 }}
+              transition={{ type: "spring", stiffness: 300, damping: 25 }}
               onClick={(e) => e.stopPropagation()}
-              className="rounded-2xl glass-morphism border border-white/10 bg-[#0A0F1E] p-6 w-full max-w-2xl space-y-4"
+              className="rounded-2xl bg-[#0A0F1E]/95 backdrop-blur-xl border border-white/10 shadow-2xl shadow-[#00D6C2]/10 p-6 w-full max-w-2xl max-h-[calc(100vh-4rem)] space-y-4 overflow-y-auto"
             >
               <h3 className="text-xl font-semibold text-white mb-4">创建灰度功能</h3>
               <Form {...form}>

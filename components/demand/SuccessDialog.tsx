@@ -28,8 +28,8 @@ export function SuccessDialog({
             initial={{ scale: 0.8, opacity: 0, y: 20 }}
             animate={{ scale: 1, opacity: 1, y: 0 }}
             exit={{ scale: 0.8, opacity: 0, y: 20 }}
-            transition={{ type: 'spring', damping: 20 }}
-            className="w-full max-w-md glass-morphism rounded-3xl p-8 text-center"
+            transition={{ type: 'spring', stiffness: 300, damping: 25 }}
+            className="w-full max-w-md bg-[#0A0F1E]/95 backdrop-blur-xl border border-white/10 rounded-3xl p-8 shadow-2xl shadow-[#00D6C2]/20 text-center"
           >
             {/* 成功图标动画 */}
             <motion.div

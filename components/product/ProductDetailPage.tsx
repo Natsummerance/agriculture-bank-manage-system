@@ -141,7 +141,7 @@ export default function ProductDetailPage() {
   };
 
   return (
-    <div className="min-h-screen bg-[#0A0A0D] pb-24">
+    <div className="min-h-screen bg-[#050816] pb-24">
       {/* Back Button */}
       <motion.button
         initial={{ opacity: 0, x: -20 }}
@@ -347,7 +347,7 @@ export default function ProductDetailPage() {
       </div>
 
       {/* Bottom Action Bar */}
-      <div className="fixed bottom-0 left-0 right-0 bg-[#0A0A0D]/95 backdrop-blur-xl border-t border-white/10 pb-safe z-30">
+      <div className="fixed bottom-0 left-0 right-0 bg-[#0A0F1E]/95 backdrop-blur-xl border-t border-white/10 pb-safe z-30">
         <div className="max-w-6xl mx-auto px-6 py-4">
           <div className="flex items-center gap-3">
             <Button

@@ -51,4 +51,16 @@ public interface BuyerOrderRepository extends JpaRepository<BuyerOrder, String> 
      * 根据买家ID查询所有订单
      */
     List<BuyerOrder> findByBuyerIdOrderByCreatedAtDesc(String buyerId);
+    
+    /**
+     * 根据买家ID和退款状态查询订单列表
+     */
+    Page<BuyerOrder> findByBuyerIdAndRefundStatusOrderByUpdatedAtDesc(
+            String buyerId, BuyerOrder.RefundStatus refundStatus, Pageable pageable);
+    
+    /**
+     * 根据买家ID查询有退款状态的订单列表
+     */
+    Page<BuyerOrder> findByBuyerIdAndRefundStatusIsNotNullOrderByUpdatedAtDesc(
+            String buyerId, Pageable pageable);
 }
