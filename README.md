@@ -3,28 +3,58 @@
 > **版本**: 1.0  
 > **最后更新**: 2025-01-XX  
 > **项目**: AgriVerse - 农业产品融销平台  
-> **技术栈**: React 18 + TypeScript + Vite + Tailwind CSS + Motion/React + Zustand
+> **技术栈**: React 18 + TypeScript + Vite + Tailwind CSS + Motion/React + Zustand (前端) | Spring Boot 3.2.0 + Java 21 + MySQL (后端)
+
+## 📁 项目结构
+
+```
+agriculture-bank-manage-system-master/
+├── frontend/              # 前端项目（React + TypeScript）
+│   ├── api/               # API客户端
+│   ├── apps/              # 应用入口
+│   ├── components/        # React组件
+│   ├── roles/             # 角色页面
+│   ├── stores/            # 状态管理
+│   ├── tests/             # 前端测试
+│   └── ...
+├── backend/               # 后端项目（Spring Boot）
+│   ├── src/
+│   │   ├── main/          # 主代码
+│   │   └── test/          # 测试代码
+│   └── ...
+├── docs/                  # 项目文档
+│   ├── md/                # Markdown文档
+│   ├── presentations/      # PPT演示文稿
+│   └── PROJECT_STRUCTURE.md
+├── tests/                 # 测试相关
+│   ├── e2e/               # E2E测试
+│   ├── backend/           # 后端测试文档
+│   └── scripts/           # 测试脚本
+├── scripts/               # 服务管理脚本
+├── tools/                 # 工具脚本
+└── README.md              # 项目说明（本文件）
+```
 
 ## 📚 文档导航
 
-> **所有项目文档已整理到 `md/` 文件夹，请查看 [文档索引](md/README.md) 获取完整文档列表**
+> **所有项目文档已整理到 `docs/` 文件夹，请查看 [文档索引](docs/md/README.md) 获取完整文档列表**
 
 ### 快速链接
-- 📖 [文档索引](md/README.md) - 所有文档的分类索引
-- 🚀 [快速开始](md/guides/quick-start/QUICK_START.md) - 快速启动指南
-- 🏗️ [项目架构](md/architecture/Project_layer.md) - 项目架构文档
-- 🎨 [设计规范](md/design/FLAVOUR.md) - 视觉设计规范
-- 🔧 [技术文档](md/guides/technical/) - 技术指南和文档
-- 🐛 [问题修复](md/fixes/) - 错误修复文档
-- 📊 [项目报告](md/reports/) - 完成和集成报告
+- 📖 [文档索引](docs/md/README.md) - 所有文档的分类索引
+- 🚀 [快速开始](docs/md/guides/quick-start/QUICK_START.md) - 快速启动指南
+- 🏗️ [项目架构](docs/md/architecture/Project_layer.md) - 项目架构文档
+- 🎨 [设计规范](docs/md/design/FLAVOUR.md) - 视觉设计规范
+- 🔧 [技术文档](docs/md/guides/technical/) - 技术指南和文档
+- 🐛 [问题修复](docs/md/fixes/) - 错误修复文档
+- 📊 [项目报告](docs/md/reports/) - 完成和集成报告
 
 ### 主要文档位置
-- **架构文档**: `md/architecture/`
-- **设计文档**: `md/design/`
-- **实现文档**: `md/implementation/`
-- **使用指南**: `md/guides/`
-- **问题修复**: `md/fixes/`
-- **项目报告**: `md/reports/`
+- **架构文档**: `docs/md/architecture/`
+- **设计文档**: `docs/md/design/`
+- **实现文档**: `docs/md/implementation/`
+- **使用指南**: `docs/md/guides/`
+- **问题修复**: `docs/md/fixes/`
+- **项目报告**: `docs/md/reports/`
 
 ---
 
@@ -71,42 +101,47 @@ AgriVerse 采用 **微前端架构** + **多角色应用分离** 的设计模式
 ## 2. 核心文件结构
 
 ```
-agriculture-bank-manage-system-main/
-├── App.tsx                          # 应用根组件
-├── main.tsx                         # 入口文件
-├── router/
-│   └── index.tsx                    # React Router 配置
-├── apps/                            # 角色应用入口
-│   ├── farmerApp.tsx               # 农户应用
-│   ├── buyerApp.tsx                # 买家应用
-│   ├── bankApp.tsx                 # 银行应用
-│   ├── expertApp.tsx               # 专家应用
-│   └── adminApp.tsx                # 管理员应用
-├── roles/                           # 角色页面
-│   ├── farmer/                     # 农户角色
-│   │   ├── FarmerLayout.tsx        # 布局组件
-│   │   ├── navigation/
-│   │   │   └── FarmerNavBar.tsx    # 底部导航栏
-│   │   └── pages/                  # 页面组件
-│   ├── buyer/                      # 买家角色
-│   ├── bank/                       # 银行角色
-│   ├── expert/                     # 专家角色
-│   └── admin/                      # 管理员角色
-├── components/                      # 共享组件
-│   ├── Navigation.tsx              # 顶部导航栏
-│   ├── common/                     # 通用组件
-│   ├── ui/                         # UI基础组件（shadcn/ui）
-│   └── {role}/                     # 角色特定组件
-├── stores/                          # Zustand状态管理
-├── contexts/                        # React Context
-│   └── RoleContext.tsx             # 角色上下文
-├── utils/                           # 工具函数
-│   ├── navigationEvents.ts         # 导航事件系统
-│   └── subRouteNavigation.ts       # 子路由导航系统
-├── api/                             # API调用层
-└── config/                          # 配置文件
-    ├── permissions.ts               # 权限配置
-    └── roleNavigation.ts            # 角色导航配置
+agriculture-bank-manage-system-master/
+├── frontend/                        # 前端项目
+│   ├── App.tsx                      # 应用根组件
+│   ├── main.tsx                     # 入口文件
+│   ├── router/
+│   │   └── index.tsx                # React Router 配置
+│   ├── apps/                        # 角色应用入口
+│   │   ├── farmerApp.tsx            # 农户应用
+│   │   ├── buyerApp.tsx             # 买家应用
+│   │   ├── bankApp.tsx             # 银行应用
+│   │   ├── expertApp.tsx            # 专家应用
+│   │   └── adminApp.tsx            # 管理员应用
+│   ├── roles/                       # 角色页面
+│   │   ├── farmer/                 # 农户角色
+│   │   │   ├── FarmerLayout.tsx    # 布局组件
+│   │   │   ├── navigation/
+│   │   │   │   └── FarmerNavBar.tsx # 底部导航栏
+│   │   │   └── pages/              # 页面组件
+│   │   ├── buyer/                   # 买家角色
+│   │   ├── bank/                    # 银行角色
+│   │   ├── expert/                  # 专家角色
+│   │   └── admin/                   # 管理员角色
+│   ├── components/                  # 共享组件
+│   │   ├── Navigation.tsx          # 顶部导航栏
+│   │   ├── common/                  # 通用组件
+│   │   ├── ui/                      # UI基础组件（shadcn/ui）
+│   │   └── {role}/                  # 角色特定组件
+│   ├── stores/                      # Zustand状态管理
+│   ├── contexts/                    # React Context
+│   │   └── RoleContext.tsx         # 角色上下文
+│   ├── utils/                       # 工具函数
+│   │   ├── navigationEvents.ts     # 导航事件系统
+│   │   └── subRouteNavigation.ts   # 子路由导航系统
+│   ├── api/                         # API调用层
+│   └── config/                      # 配置文件
+│       ├── permissions.ts           # 权限配置
+│       └── roleNavigation.ts        # 角色导航配置
+└── backend/                          # 后端项目（Spring Boot）
+    └── src/
+        ├── main/                    # 主代码
+        └── test/                    # 测试代码
 ```
 
 ---
@@ -115,8 +150,8 @@ agriculture-bank-manage-system-main/
 
 ### 3.1 入口与路由层
 
-#### `App.tsx`
-**路径**: `/App.tsx`  
+#### `frontend/App.tsx`
+**路径**: `frontend/App.tsx`  
 **用途**: 应用根组件，提供全局上下文和错误边界  
 **关键变量**:
 - `RoleProvider`: 角色上下文提供者
@@ -125,13 +160,13 @@ agriculture-bank-manage-system-main/
 - `RouterProvider`: React Router 提供者
 
 **依赖关系**:
-- `router/index.tsx` - 路由配置
-- `contexts/RoleContext.tsx` - 角色上下文
-- `components/common/GlobalErrorBoundary.tsx` - 错误边界
-- `components/common/GlobalLoading.tsx` - 加载组件
+- `frontend/router/index.tsx` - 路由配置
+- `frontend/contexts/RoleContext.tsx` - 角色上下文
+- `frontend/components/common/GlobalErrorBoundary.tsx` - 错误边界
+- `frontend/components/common/GlobalLoading.tsx` - 加载组件
 
-#### `router/index.tsx`
-**路径**: `/router/index.tsx`  
+#### `frontend/router/index.tsx`
+**路径**: `frontend/router/index.tsx`  
 **用途**: 配置 React Router，定义所有路由规则  
 **关键变量**:
 - `router`: 路由配置对象
@@ -149,8 +184,8 @@ agriculture-bank-manage-system-main/
 
 ### 3.2 角色应用入口层
 
-#### `apps/farmerApp.tsx`
-**路径**: `/apps/farmerApp.tsx`  
+#### `frontend/apps/farmerApp.tsx`
+**路径**: `frontend/apps/farmerApp.tsx`  
 **用途**: 农户角色的应用入口，管理Tab切换和子路由渲染  
 **关键变量**:
 - `activeTab`: 当前激活的Tab（'home' | 'finance' | 'expert' | 'trade' | 'profile'）
@@ -174,8 +209,8 @@ agriculture-bank-manage-system-main/
 - `onNavigationChange`: 监听Tab切换事件
 - `onSubRouteChange`: 监听子路由切换事件
 
-#### `apps/buyerApp.tsx`
-**路径**: `/apps/buyerApp.tsx`  
+#### `frontend/apps/buyerApp.tsx`
+**路径**: `frontend/apps/buyerApp.tsx`  
 **用途**: 买家角色的应用入口  
 **关键变量**: 同 `farmerApp.tsx`，但页面组件不同
 
@@ -189,8 +224,8 @@ agriculture-bank-manage-system-main/
 - `BuyerOrders`: 订单列表
 - 子页面: `BuyerProductDetail`, `BuyerProductCompare`, `BuyerRefundProgress`, `BuyerProductReview`, `BuyerAddressManage`, `BuyerCouponInvite`, `BuyerDemand`, `BuyerMyDemands`, `BuyerDemandQuotes`
 
-#### `apps/bankApp.tsx`
-**路径**: `/apps/bankApp.tsx`  
+#### `frontend/apps/bankApp.tsx`
+**路径**: `frontend/apps/bankApp.tsx`  
 **用途**: 银行角色的应用入口  
 **关键变量**: 同 `farmerApp.tsx`
 
@@ -203,8 +238,8 @@ agriculture-bank-manage-system-main/
 - `BankAppApproval`: 审批列表
 - 子页面: `BankLoanProducts`, `BankApprovalDetail`, `BankScoringCard`, `BankDisbursement`, `BankPostLoan`, `BankReconciliation`, `BankContractGenerate`, `BankOverdueAlert`, `BankApplicationDownload`
 
-#### `apps/expertApp.tsx`
-**路径**: `/apps/expertApp.tsx`  
+#### `frontend/apps/expertApp.tsx`
+**路径**: `frontend/apps/expertApp.tsx`  
 **用途**: 专家角色的应用入口  
 **关键变量**: 同 `farmerApp.tsx`
 
@@ -216,8 +251,8 @@ agriculture-bank-manage-system-main/
 - `ExpertProfilePanel`: 个人中心
 - 子页面: `ExpertCalendarPage`, `ExpertAppointmentManage`, `ExpertQADetail`, `ExpertArticleEdit`, `ExpertQualificationUpload`, `ExpertServicePrice`, `ExpertFarmerReview`
 
-#### `apps/adminApp.tsx`
-**路径**: `/apps/adminApp.tsx`  
+#### `frontend/apps/adminApp.tsx`
+**路径**: `frontend/apps/adminApp.tsx`  
 **用途**: 管理员角色的应用入口  
 **关键变量**: 同 `farmerApp.tsx`
 
@@ -232,8 +267,8 @@ agriculture-bank-manage-system-main/
 
 ### 3.3 导航系统
 
-#### `components/Navigation.tsx`
-**路径**: `/components/Navigation.tsx`  
+#### `frontend/components/Navigation.tsx`
+**路径**: `frontend/components/Navigation.tsx`  
 **用途**: 顶部导航栏组件，显示Tab切换和用户操作按钮  
 **关键变量**:
 - `activeTab`: 当前激活的Tab（从props传入）
@@ -271,8 +306,8 @@ agriculture-bank-manage-system-main/
 - 购物车/消息徽章: `initial={{ scale: 0 }} animate={{ scale: 1 }}`
 - 未读消息心跳: `animate={{ scale: [1, 1.2, 1], opacity: [1, 0.8, 1] }}`
 
-#### `utils/navigationEvents.ts`
-**路径**: `/utils/navigationEvents.ts`  
+#### `frontend/utils/navigationEvents.ts`
+**路径**: `frontend/utils/navigationEvents.ts`  
 **用途**: 全局Tab切换事件系统，允许组件间通信切换Tab  
 **关键函数**:
 - `navigateToTab(tab: NavigationTab)`: 触发Tab切换事件
@@ -288,8 +323,8 @@ type NavigationTab = 'home' | 'finance' | 'expert' | 'trade' | 'profile' | 'cart
 - 表单提交成功后跳转到列表Tab
 - 深度链接需要激活特定Tab
 
-#### `utils/subRouteNavigation.ts`
-**路径**: `/utils/subRouteNavigation.ts`  
+#### `frontend/utils/subRouteNavigation.ts`
+**路径**: `frontend/utils/subRouteNavigation.ts`  
 **用途**: 子路由导航系统，用于Tab内部页面跳转  
 **关键函数**:
 - `navigateToSubRoute(tab: string, subRoute: string, params?)`: 触发子路由切换
@@ -307,8 +342,8 @@ type NavigationTab = 'home' | 'finance' | 'expert' | 'trade' | 'profile' | 'cart
 
 ### 3.4 角色上下文
 
-#### `contexts/RoleContext.tsx`
-**路径**: `/contexts/RoleContext.tsx`  
+#### `frontend/contexts/RoleContext.tsx`
+**路径**: `frontend/contexts/RoleContext.tsx`  
 **用途**: 全局角色状态管理，提供用户信息、权限、角色等  
 **关键变量**:
 - `role`: 当前角色类型 (`'farmer' | 'buyer' | 'bank' | 'expert' | 'admin' | null`)
@@ -327,11 +362,11 @@ type NavigationTab = 'home' | 'finance' | 'expert' | 'trade' | 'profile' | 'cart
 - 自动从 `localStorage` 恢复状态
 
 **依赖关系**:
-- `config/permissions.ts`: 权限配置映射
+- `frontend/config/permissions.ts`: 权限配置映射
 
 ### 3.5 页面组件详细列表
 
-#### 农户角色页面 (`roles/farmer/pages/`)
+#### 农户角色页面 (`frontend/roles/farmer/pages/`)
 
 | 文件名 | 组件名 | 用途 | 路由路径 |
 |--------|--------|------|----------|
@@ -371,7 +406,7 @@ type NavigationTab = 'home' | 'finance' | 'expert' | 'trade' | 'profile' | 'cart
 | `Settings.tsx` | `FarmerSettings` | 系统设置 | `profile` → `settings` |
 | `ShippingAddressManage.tsx` | `FarmerShippingAddressManage` | 发货地址管理 | `profile` → `shipping-address` |
 
-#### 买家角色页面 (`roles/buyer/pages/`)
+#### 买家角色页面 (`frontend/roles/buyer/pages/`)
 
 | 文件名 | 组件名 | 用途 | 路由路径 |
 |--------|--------|------|----------|
@@ -392,7 +427,7 @@ type NavigationTab = 'home' | 'finance' | 'expert' | 'trade' | 'profile' | 'cart
 | `AddressManage.tsx` | `BuyerAddressManage` | 收货地址管理 | `profile` → `address` |
 | `CouponInvite.tsx` | `BuyerCouponInvite` | 邀请好友 | `profile` → `invite` |
 
-#### 银行角色页面 (`roles/bank/pages/`)
+#### 银行角色页面 (`frontend/roles/bank/pages/`)
 
 | 文件名 | 组件名 | 用途 | 路由路径 |
 |--------|--------|------|----------|
@@ -412,7 +447,7 @@ type NavigationTab = 'home' | 'finance' | 'expert' | 'trade' | 'profile' | 'cart
 | `RiskDashboard.tsx` | `BankRiskDashboard` | 风控仪表盘 | `trade` |
 | `BankProfilePanel.tsx` | `BankProfilePanel` | 个人中心 | `profile` |
 
-#### 专家角色页面 (`roles/expert/pages/`)
+#### 专家角色页面 (`frontend/roles/expert/pages/`)
 
 | 文件名 | 组件名 | 用途 | 路由路径 |
 |--------|--------|------|----------|
@@ -429,7 +464,7 @@ type NavigationTab = 'home' | 'finance' | 'expert' | 'trade' | 'profile' | 'cart
 | `ServicePrice.tsx` | `ExpertServicePrice` | 服务价格 | `profile` → `price` |
 | `FarmerReview.tsx` | `ExpertFarmerReview` | 评价农户 | `profile` → `farmer-review` |
 
-#### 管理员角色页面 (`roles/admin/pages/`)
+#### 管理员角色页面 (`frontend/roles/admin/pages/`)
 
 | 文件名 | 组件名 | 用途 | 路由路径 |
 |--------|--------|------|----------|
@@ -452,7 +487,7 @@ type NavigationTab = 'home' | 'finance' | 'expert' | 'trade' | 'profile' | 'cart
 
 ### 3.6 通用组件
 
-#### `components/common/` 目录
+#### `frontend/components/common/` 目录
 
 | 文件名 | 组件名 | 用途 | 关键Props |
 |--------|--------|------|-----------|
@@ -473,7 +508,7 @@ type NavigationTab = 'home' | 'finance' | 'expert' | 'trade' | 'profile' | 'cart
 | `GlobalLoading.tsx` | `GlobalLoading` | 全局加载组件 | - |
 | `GlobalErrorBoundary.tsx` | `GlobalErrorBoundary` | 全局错误边界 | `children` |
 
-#### `components/ui/` 目录
+#### `frontend/components/ui/` 目录
 
 基于 **shadcn/ui** 的UI组件库，包含：
 - `button.tsx`: 按钮组件
@@ -1703,7 +1738,7 @@ export default function MyComponent() {
 
 #### React Router 配置
 
-**文件**: `router/index.tsx`  
+**文件**: `frontend/router/index.tsx`  
 **路由类型**: Browser Router (HTML5 History API)
 
 **路由结构**:
@@ -1865,7 +1900,7 @@ const renderFinanceSubRoute = (subRoute: string, params?: Record<string, string>
 
 #### NotFound组件
 
-**文件**: `components/NotFound.tsx`  
+**文件**: `frontend/components/NotFound.tsx`  
 **用途**: 处理未匹配的路由，显示友好的404页面
 
 **设计特点**:
@@ -1950,7 +1985,7 @@ api/
 
 ### 10.2 API客户端基础
 
-**文件**: `api/client.ts`
+**文件**: `frontend/api/client.ts`
 
 **核心功能**:
 - JWT Token自动管理（存储、刷新、清除）
@@ -1986,7 +2021,7 @@ export function clearAuth(): void
 
 ### 10.3 类型定义系统
 
-**文件**: `api/types.ts`
+**文件**: `frontend/api/types.ts`
 
 **通用类型**:
 ```typescript
@@ -2013,7 +2048,7 @@ export interface ApiResponse<T> {
 
 ### 10.4 各模块API接口详情
 
-#### 10.4.1 农户模块API (`api/farmer.ts`)
+#### 10.4.1 农户模块API (`frontend/api/farmer.ts`)
 
 **商品管理接口**:
 - ✅ `getFarmerProducts(params?)` - 获取商品列表
@@ -2032,7 +2067,7 @@ export interface ApiResponse<T> {
 - ✅ `signContract(contractId, signatureUrl)` - 签署合同
 - ✅ `getRepaymentSummary(id)` - 获取还款汇总
 
-**融资匹配接口** (`api/farmerFinanceMatch.ts`):
+**融资匹配接口** (`frontend/api/farmerFinanceMatch.ts`):
 - ✅ `startMatch(data)` - 启动匹配（创建拼单组）
 - ✅ `getMatchCandidates(amount)` - 获取匹配候选（后端已实现）
 - ✅ `getMatchDetail(matchId)` - 获取匹配详情
@@ -2043,7 +2078,7 @@ export interface ApiResponse<T> {
 
 **接口路径**: 已统一修正为 `/api/farmer/finance/joint-loan/*`
 
-#### 10.4.2 银行模块API (`api/bank.ts`)
+#### 10.4.2 银行模块API (`frontend/api/bank.ts`)
 
 **产品管理接口**:
 - ✅ `getBankLoanProducts()` - 获取产品列表
@@ -2085,7 +2120,7 @@ export interface ApiResponse<T> {
 - ✅ `getPostLoanMonitoring(financingId)` - 获取贷后监控数据
 - ✅ `getAllPostLoanMonitoring()` - 获取所有贷后监控列表
 
-#### 10.4.3 专家模块API (`api/expert.ts`)
+#### 10.4.3 专家模块API (`frontend/api/expert.ts`)
 
 **问答管理接口**:
 - ✅ `searchQuestions(request)` - 搜索问题
@@ -2125,7 +2160,7 @@ export interface ApiResponse<T> {
 **仪表盘接口**:
 - ✅ `getExpertDashboardStatistics()` - 获取仪表盘统计
 
-#### 10.4.4 管理员模块API (`api/admin.ts`)
+#### 10.4.4 管理员模块API (`frontend/api/admin.ts`)
 
 **用户管理接口**:
 - ✅ `adminUserList(request)` - 搜索用户
@@ -2157,7 +2192,7 @@ export interface ApiResponse<T> {
 - ✅ `getSystemConfigs(category?)` - 获取系统配置
 - ✅ `setSystemConfig(request)` - 设置系统配置
 
-#### 10.4.5 买家模块API (`api/buyer.ts`)
+#### 10.4.5 买家模块API (`frontend/api/buyer.ts`)
 
 **商品管理接口**:
 - ✅ `getBuyerProducts(params?)` - 获取商品列表
@@ -2193,7 +2228,7 @@ export interface ApiResponse<T> {
 
 **基础结构**:
 ```typescript
-// api/farmer.ts
+// frontend/api/farmer.ts
 import { get, post } from './client';
 import { Page } from './types';
 
@@ -2232,6 +2267,7 @@ export async function getProducts(
 **在组件中使用**:
 ```typescript
 import { createProduct, getProducts } from '../../../api/farmer';
+// 注意：从frontend目录下的相对路径引用
 import { toast } from 'sonner';
 
 const handleSubmit = async (values: FormValues) => {
@@ -2252,7 +2288,7 @@ const handleSubmit = async (values: FormValues) => {
 
 ### 10.6 错误处理机制
 
-**统一错误处理** (`api/client.ts`):
+**统一错误处理** (`frontend/api/client.ts`):
 - 网络错误自动重试
 - 401错误自动刷新Token
 - 403错误提示权限不足
@@ -2335,7 +2371,7 @@ export async function submitFarmerFinanceApp(
 
 ### 11.1 权限配置
 
-**文件**: `config/permissions.ts`
+**文件**: `frontend/config/permissions.ts`
 
 **权限代码格式**: `{role}.{module}.{action}`
 
@@ -2362,6 +2398,7 @@ export const rolePermissions = {
 **在组件中使用**:
 ```typescript
 import { useRole } from '../../../contexts/RoleContext';
+// 注意：从frontend目录下的相对路径引用
 
 export default function MyComponent() {
   const { hasPermission } = useRole();
@@ -2417,7 +2454,7 @@ const isMobile = window.innerWidth < 768;
 
 ### 12.3 底部导航栏
 
-**文件**: `roles/{role}/navigation/{Role}NavBar.tsx`
+**文件**: `frontend/roles/{role}/navigation/{Role}NavBar.tsx`
 
 **显示条件**: 仅在移动端显示（`isMobile === true`）
 
@@ -2602,7 +2639,7 @@ test('renders finance panel', () => {
 
 ### 16.1 构建配置
 
-**文件**: `vite.config.ts`
+**文件**: `frontend/vite.config.ts`
 
 **关键配置**:
 - 输出目录: `dist/`
@@ -2719,30 +2756,30 @@ locales/
 ### 19.2 关键文件索引
 
 **入口文件**:
-- `main.tsx`: 应用入口
-- `App.tsx`: 根组件
-- `router/index.tsx`: 路由配置
+- `frontend/main.tsx`: 应用入口
+- `frontend/App.tsx`: 根组件
+- `frontend/router/index.tsx`: 路由配置
 
 **角色应用**:
-- `apps/farmerApp.tsx`: 农户应用
-- `apps/buyerApp.tsx`: 买家应用
-- `apps/bankApp.tsx`: 银行应用
-- `apps/expertApp.tsx`: 专家应用
-- `apps/adminApp.tsx`: 管理员应用
+- `frontend/apps/farmerApp.tsx`: 农户应用
+- `frontend/apps/buyerApp.tsx`: 买家应用
+- `frontend/apps/bankApp.tsx`: 银行应用
+- `frontend/apps/expertApp.tsx`: 专家应用
+- `frontend/apps/adminApp.tsx`: 管理员应用
 
 **导航系统**:
-- `components/Navigation.tsx`: 顶部导航
-- `utils/navigationEvents.ts`: Tab切换事件
-- `utils/subRouteNavigation.ts`: 子路由导航
-- `roles/{role}/navigation/{Role}NavBar.tsx`: 底部导航
+- `frontend/components/Navigation.tsx`: 顶部导航
+- `frontend/utils/navigationEvents.ts`: Tab切换事件
+- `frontend/utils/subRouteNavigation.ts`: 子路由导航
+- `frontend/roles/{role}/navigation/{Role}NavBar.tsx`: 底部导航
 
 **状态管理**:
-- `stores/*.ts`: 各业务域的Store
-- `contexts/RoleContext.tsx`: 角色上下文
+- `frontend/stores/*.ts`: 各业务域的Store
+- `frontend/contexts/RoleContext.tsx`: 角色上下文
 
 **设计规范**:
-- `FLAVOUR.md`: 视觉设计规范
-- `DESIGN.md`: 设计系统文档
+- `docs/md/design/FLAVOUR.md`: 视觉设计规范
+- `docs/md/design/DESIGN.md`: 设计系统文档
 
 ### 19.3 参考资源
 

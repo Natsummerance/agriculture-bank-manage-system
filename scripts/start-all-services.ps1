@@ -54,21 +54,24 @@ Write-Host "3. Starting Frontend Service..." -ForegroundColor Yellow
 Write-Host "   This will start Vite dev server on port 5173" -ForegroundColor Gray
 Write-Host ""
 
-# Check if node_modules exists
-if (Test-Path "node_modules") {
+# Check if frontend node_modules exists
+$frontendDir = Join-Path $PWD "frontend"
+if (Test-Path (Join-Path $frontendDir "node_modules")) {
     Write-Host "   Dependencies installed, starting frontend..." -ForegroundColor Green
-    Start-Process powershell -ArgumentList "-NoExit", "-Command", "cd '$PWD'; npm run dev"
+    Start-Process powershell -ArgumentList "-NoExit", "-Command", "cd '$frontendDir'; npm run dev"
     Write-Host "   Frontend service starting in new window..." -ForegroundColor Green
 } else {
     Write-Host "   Dependencies not found. Installing..." -ForegroundColor Yellow
+    Push-Location $frontendDir
     npm install
     if ($LASTEXITCODE -eq 0) {
         Write-Host "   Dependencies installed, starting frontend..." -ForegroundColor Green
-        Start-Process powershell -ArgumentList "-NoExit", "-Command", "cd '$PWD'; npm run dev"
+        Start-Process powershell -ArgumentList "-NoExit", "-Command", "cd '$frontendDir'; npm run dev"
         Write-Host "   Frontend service starting in new window..." -ForegroundColor Green
     } else {
         Write-Host "   Failed to install dependencies" -ForegroundColor Red
     }
+    Pop-Location
 }
 
 Write-Host ""
@@ -81,6 +84,6 @@ Write-Host ""
 Write-Host "Backend: http://localhost:8080/api" -ForegroundColor Cyan
 Write-Host "Frontend: http://localhost:5173" -ForegroundColor Cyan
 Write-Host ""
-Write-Host "To test services, run: .\test-system.ps1" -ForegroundColor Yellow
+Write-Host "To test services, run: .\tests\scripts\test-system.ps1" -ForegroundColor Yellow
 Write-Host ""
 

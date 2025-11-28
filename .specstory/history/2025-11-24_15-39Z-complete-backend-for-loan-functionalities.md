@@ -146,7 +146,7 @@ _**Agent (model default, mode Agent)**_
             
 | File | Lines |
 |------|-------|
-| `md/V2_COMPLETION_REPORT.md` | L59 |
+| `docs/md/V2_COMPLETION_REPORT.md` | L59 |
 | `roles/bank/pages/ContractGenerate.tsx` | L185 |
 | `roles/bank/pages/ContractGenerate.tsx` | L8-185 |
 | `components/bank/JointLoanHub.tsx` | L120-563 |
@@ -8519,17 +8519,17 @@ Output mode: content
 |------|-------|
 | `roles/bank/pages/BankReconciliation.tsx` | L158 |
 | `roles/bank/pages/BankReconciliation.tsx` | L9-158 |
-| `md/ALIGNMENT_DIAGNOSIS.md` | L67 |
-| `md/SP1_V2_COMPLETION.md` | L73 |
-| `md/ALIGNMENT_FIX_V2.md` | L309-387 |
+| `docs/md/ALIGNMENT_DIAGNOSIS.md` | L67 |
+| `docs/md/SP1_V2_COMPLETION.md` | L73 |
+| `docs/md/ALIGNMENT_FIX_V2.md` | L309-387 |
 | `roles/bank/pages/Dashboard.tsx` | L10-186 |
-| `md/SP1_COMPLETION_REPORT.md` | L55 |
-| `md/SP1_TECHNICAL_SUMMARY.md` | L78 |
+| `docs/md/SP1_COMPLETION_REPORT.md` | L55 |
+| `docs/md/SP1_TECHNICAL_SUMMARY.md` | L78 |
 | `backend/document/bank.md` | L80 |
-| `md/ALIGNMENT_FIX_V2.md` | L76 |
-| `md/SP1_COMPLETION_REPORT.md` | L51-136 |
-| `md/ALL_FEATURES_IMPLEMENTED.md` | L75 |
-| `md/V2_COMPLETION_REPORT.md` | L59 |
+| `docs/md/ALIGNMENT_FIX_V2.md` | L76 |
+| `docs/md/SP1_COMPLETION_REPORT.md` | L51-136 |
+| `docs/md/ALL_FEATURES_IMPLEMENTED.md` | L75 |
+| `docs/md/V2_COMPLETION_REPORT.md` | L59 |
 
 </details>
 </tool-use>
@@ -22417,10 +22417,10 @@ No results found
 | File | Lines |
 |------|-------|
 | `backend/document/bank.md` | L80 |
-| `md/NIGHT_MODE_ULTIMATE.md` | L149-217 |
-| `md/ALL_FEATURES_IMPLEMENTED.md` | L75 |
+| `docs/md/NIGHT_MODE_ULTIMATE.md` | L149-217 |
+| `docs/md/ALL_FEATURES_IMPLEMENTED.md` | L75 |
 | `backend/document/bank.md` | L2556-2613 |
-| `md/MISSING_MODULES_COMPLETION.md` | L76 |
+| `docs/md/MISSING_MODULES_COMPLETION.md` | L76 |
 | `apps/farmerApp.tsx` | L29 |
 | `backend/README.md` | L65 |
 | `pages/StarGateApp.tsx` | L152 |
@@ -31515,7 +31515,7 @@ Result:
       ]
     },
     {
-      &quot;relativeWorkspacePath&quot;: &quot;backend/src/test/java/com/agriverse/FarmerProductApiTest.java&quot;,
+      &quot;relativeWorkspacePath&quot;: &quot;backend/tests/frontend/java/com/agriverse/FarmerProductApiTest.java&quot;,
       &quot;errors&quot;: [
         {
           &quot;message&quot;: &quot;Null type safety: The expression of type &#39;FarmerProduct&#39; needs unchecked conversion to conform to &#39;@NonNull FarmerProduct&#39;&quot;,
@@ -36857,7 +36857,7 @@ _**Agent (model default, mode Agent)**_
 | File | Lines |
 |------|-------|
 | `components/ExpertPage.tsx` | L469 |
-| `md/README.md` | L345-403 |
+| `docs/md/README.md` | L345-403 |
 | `README.md` | L1419-1506 |
 | `README.md` | L150-203 |
 | `README.md` | L1503-1599 |
