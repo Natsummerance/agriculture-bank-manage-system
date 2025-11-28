@@ -1,3 +1,6 @@
+# 依赖目录
+node_modules/
+
 # E2E测试结果
 e2e/test-results/
 e2e/playwright-report/
